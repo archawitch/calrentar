@@ -24,8 +24,8 @@ const icons: IconType = {
   },
 };
 
-const getIcon = (isSuccess: AlertType, result: boolean) => {
-  return icons[isSuccess][result ? "success" : "failure"] || null;
+const getIcon = (type: AlertType, result: boolean) => {
+  return icons[type][result ? "success" : "failure"] || null;
 };
 
 const Alert: React.FC<SuccessAlertProp> = ({

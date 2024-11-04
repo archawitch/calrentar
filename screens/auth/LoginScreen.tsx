@@ -11,6 +11,8 @@ import AuthInput from "@components/inputs/AuthInput";
 import ButtonLarge from "@components/buttons/ButtonLarge";
 import Alert from "@components/alert/Alert";
 
+import { login } from "@services/authServices"
+
 type LoginScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<AuthStackParamList, "Login">,
   StackNavigationProp<RootStackParamList>
@@ -23,13 +25,13 @@ const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
   const [password, setPassword] = useState<string>("");
   const [isPressed, setIsPressed] = useState<boolean>(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     // TODO: handle login logic here ...
-    const result: boolean = false;
+    const { success, msg } = await login(email, password);
 
     // if authenticated, navigate to the Home screen
     // else,show pop up alert
-    if (result) {
+    if (success) {
       navigation.navigate("Main", {
         screen: "HomeTab",
         params: {
@@ -41,6 +43,7 @@ const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
 
     // toggle state to show the alert pop up
     setIsPressed(true);
+    alert(msg)
   };
 
   // Toggle alert popup when clicking sign up button
@@ -90,7 +93,7 @@ const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
       type="auth"
       isSuccess={false}
       title="Login failed"
-      details="Your email or password is not correct."
+      details="Your email or password is incorrect."
     />
   );
 };

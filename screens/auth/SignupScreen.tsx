@@ -7,6 +7,8 @@ import AuthInput from "@components/inputs/AuthInput";
 import ButtonLarge from "@components/buttons/ButtonLarge";
 import Alert from "@components/alert/Alert";
 
+import { signup } from "@services/authServices"
+
 type SignupScreenNavigationProp = StackNavigationProp<
   AuthStackParamList,
   "Signup"
@@ -21,14 +23,15 @@ const SignupScreen: React.FC<{ navigation: SignupScreenNavigationProp }> = ({
   const [isPressed, setIsPressed] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     setIsPressed(true);
 
     // TODO: handle sign up logic here ...
-    const result: boolean = true;
-
+    const { success, msg} = await signup(email, password, confirmPassword);
+  
     // update status
-    setIsAuthenticated(result);
+    setIsAuthenticated(success);
+    !success ? alert(msg) : null;
   };
 
   const getAlertTitle = () => {
