@@ -8,8 +8,8 @@ The structure should be like
 /assets
   /images
     /car-images
-      /benz-g-63-front.png
-      /benz-g-63-side.png
+      /benz-g63-black-front.png
+      /benz-g63-black-side.png
       ...
     ...
   /icons
