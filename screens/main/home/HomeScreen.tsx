@@ -26,6 +26,8 @@ import CardCar from "@components/cars/CardCar";
 import CardCarHeader from "@components/cars/CardCarHeader";
 import ImageContain from "@components/images/ImageContain";
 
+import { getCars } from "@services/homeServices"
+
 type HomeScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<HomeStackParamList, "Home">,
   StackNavigationProp<RootStackParamList>

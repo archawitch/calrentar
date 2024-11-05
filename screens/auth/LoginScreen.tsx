@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -6,8 +6,6 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
-  KeyboardAvoidingView,
-  Platform,
 } from "react-native";
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -18,7 +16,8 @@ import {
 } from "@appTypes/navigation/navigationTypes";
 import AuthInput from "@components/inputs/AuthInput";
 import ButtonLarge from "@components/buttons/ButtonLarge";
-import Alert from "@components/alert/Alert";
+
+import { login } from "@services/authServices";
 
 type LoginScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<AuthStackParamList, "Login">,
@@ -30,21 +29,14 @@ const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
 }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [isPressed, setIsPressed] = useState<boolean>(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     // TODO: handle login logic here ...
-    const result: boolean = true;
+    const { isSuccess, msg } = await login(email, password);
 
     // if authenticated, navigate to the Home screen
     // else,show pop up alert
-    if (result) {
-      // navigation.navigate("Main", {
-      //   screen: "HomeTab",
-      //   params: {
-      //     screen: "Home",
-      //   },
-      // });
+    if (isSuccess) {
       navigation.reset({
         index: 0,
         routes: [
@@ -57,20 +49,11 @@ const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
       return;
     }
 
-    // toggle state to show the alert pop up
-    setIsPressed(true);
+    // show the alert pop up
+    alert(msg);
   };
 
-  // Toggle alert popup when clicking sign up button
-  useEffect(() => {
-    if (isPressed) {
-      setTimeout(() => {
-        setIsPressed(false);
-      }, 3000);
-    }
-  }, [isPressed]);
-
-  return !isPressed ? (
+  return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <Image
@@ -105,13 +88,6 @@ const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
         </View>
       </View>
     </TouchableWithoutFeedback>
-  ) : (
-    <Alert
-      type="auth"
-      isSuccess={false}
-      title="Login failed"
-      details="Your email or password is not correct."
-    />
   );
 };
 
