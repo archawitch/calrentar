@@ -11,6 +11,8 @@ import AuthInput from "@components/inputs/AuthInput";
 import ButtonLarge from "@components/buttons/ButtonLarge";
 import Alert from "@components/alert/Alert";
 
+import { login } from "@services/authServices"
+
 type LoginScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<AuthStackParamList, "Login">,
   StackNavigationProp<RootStackParamList>
@@ -21,15 +23,13 @@ const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
 }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [isPressed, setIsPressed] = useState<boolean>(false);
 
-  const handleLogin = () => {
-    // TODO: handle login logic here ...
-    const result: boolean = false;
+  const handleLogin = async () => {
+    const { isSuccess, msg } = await login(email, password);
 
     // if authenticated, navigate to the Home screen
     // else,show pop up alert
-    if (result) {
+    if (isSuccess) {
       navigation.navigate("Main", {
         screen: "HomeTab",
         params: {
@@ -39,20 +39,11 @@ const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
       return;
     }
 
-    // toggle state to show the alert pop up
-    setIsPressed(true);
+    // show the alert pop up
+    alert(msg)
   };
 
-  // Toggle alert popup when clicking sign up button
-  useEffect(() => {
-    if (isPressed) {
-      setTimeout(() => {
-        setIsPressed(false);
-      }, 3000);
-    }
-  }, [isPressed]);
-
-  return !isPressed ? (
+  return (
     <View style={styles.container}>
       <Image
         style={styles.image}
@@ -85,14 +76,7 @@ const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
         </Text>
       </View>
     </View>
-  ) : (
-    <Alert
-      type="auth"
-      isSuccess={false}
-      title="Login failed"
-      details="Your email or password is not correct."
-    />
-  );
+  )
 };
 
 const styles = StyleSheet.create({

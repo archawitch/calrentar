@@ -12,8 +12,8 @@ import {
   HistoryStackParamList,
 } from "@appTypes/navigation/navigationTypes";
 
-import LoginScreen from "../screens/auth/LoginScreen";
-import SignupScreen from "../screens/auth/SignupScreen";
+import LoginScreen from "@screens/auth/LoginScreen";
+import SignupScreen from "@screens/auth/SignupScreen";
 import HomeScreen from "@screens/main/home/HomeScreen";
 // import CarInformationScreen from "../screens/Main/Home/CarInformationScreen";
 // import RentInformationScreen from "../screens/Main/Home/RentInformationScreen";

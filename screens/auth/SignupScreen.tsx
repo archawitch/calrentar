@@ -7,6 +7,8 @@ import AuthInput from "@components/inputs/AuthInput";
 import ButtonLarge from "@components/buttons/ButtonLarge";
 import Alert from "@components/alert/Alert";
 
+import { signup } from "@services/authServices"
+
 type SignupScreenNavigationProp = StackNavigationProp<
   AuthStackParamList,
   "Signup"
@@ -18,17 +20,13 @@ const SignupScreen: React.FC<{ navigation: SignupScreenNavigationProp }> = ({
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
-  const [isPressed, setIsPressed] = useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-  const handleSignup = () => {
-    setIsPressed(true);
-
-    // TODO: handle sign up logic here ...
-    const result: boolean = true;
-
+  const handleSignup = async () => {
+    const { isSuccess, msg} = await signup(email, password, confirmPassword);
+  
     // update status
-    setIsAuthenticated(result);
+    !isSuccess ? alert(msg) : setIsAuthenticated(isSuccess);
   };
 
   const getAlertTitle = () => {
@@ -43,19 +41,16 @@ const SignupScreen: React.FC<{ navigation: SignupScreenNavigationProp }> = ({
 
   // Toggle alert popup when clicking sign up button
   useEffect(() => {
-    if (isPressed) {
+    if (isAuthenticated) {
       setTimeout(() => {
-        if (!isAuthenticated) {
-          setIsPressed(false);
-          return;
-        }
         // if success, navigate to Log in screen
         navigation.goBack();
       }, 3000);
     }
-  }, [isPressed]);
+    
+  }, [isAuthenticated]);
 
-  return !isPressed ? (
+  return !isAuthenticated ? (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
