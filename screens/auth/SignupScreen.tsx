@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 import { AuthStackParamList } from "@appTypes/navigation/navigationTypes";
@@ -56,45 +65,49 @@ const SignupScreen: React.FC<{ navigation: SignupScreenNavigationProp }> = ({
   }, [isPressed]);
 
   return !isPressed ? (
-    <View style={styles.container}>
-      <View style={styles.imageContainer}>
-        <Image
-          style={styles.image}
-          source={require("@assets/images/illustrations/signup-illustration.png")}></Image>
-      </View>
-      <Text style={styles.title}>Create an account</Text>
-      <View style={styles.inputContainer}>
-        <AuthInput
-          label="Email"
-          inputText={email}
-          onChangeText={setEmail}
-          placeholder="Your email"
-        />
-        <AuthInput
-          label="Password"
-          inputText={password}
-          onChangeText={setPassword}
-          placeholder="must be at least 8 characters"
-          secureTextEntry
-        />
-        <AuthInput
-          label="Confirm Password"
-          inputText={confirmPassword}
-          onChangeText={setConfirmPassword}
-          placeholder="must be at least 8 characters"
-          secureTextEntry
-        />
-      </View>
-      <ButtonLarge title="Sign up" onPress={handleSignup} />
-      <View style={styles.loginContainer}>
-        <Text style={styles.loginText}>
-          Already have an account?{" "}
-          <Text style={styles.loginButton} onPress={() => navigation.goBack()}>
-            Log in
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <View style={styles.imageContainer}>
+          <Image
+            style={styles.image}
+            source={require("@assets/images/illustrations/signup-illustration.png")}></Image>
+        </View>
+        <Text style={styles.title}>Create an account</Text>
+        <View style={styles.inputContainer}>
+          <AuthInput
+            label="Email"
+            inputText={email}
+            onChangeText={setEmail}
+            placeholder="Your email"
+          />
+          <AuthInput
+            label="Password"
+            inputText={password}
+            onChangeText={setPassword}
+            placeholder="must be at least 8 characters"
+            secureTextEntry
+          />
+          <AuthInput
+            label="Confirm Password"
+            inputText={confirmPassword}
+            onChangeText={setConfirmPassword}
+            placeholder="must be at least 8 characters"
+            secureTextEntry
+          />
+        </View>
+        <ButtonLarge title="Sign up" onPress={handleSignup} />
+        <View style={styles.loginContainer}>
+          <Text style={styles.loginText}>
+            Already have an account?{" "}
+            <Text
+              style={styles.loginButton}
+              onPress={() => navigation.goBack()}>
+              Log in
+            </Text>
           </Text>
-        </Text>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   ) : (
     <Alert
       type="auth"

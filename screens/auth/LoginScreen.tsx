@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
@@ -25,16 +34,25 @@ const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
 
   const handleLogin = () => {
     // TODO: handle login logic here ...
-    const result: boolean = false;
+    const result: boolean = true;
 
     // if authenticated, navigate to the Home screen
     // else,show pop up alert
     if (result) {
-      navigation.navigate("Main", {
-        screen: "HomeTab",
-        params: {
-          screen: "Home",
-        },
+      // navigation.navigate("Main", {
+      //   screen: "HomeTab",
+      //   params: {
+      //     screen: "Home",
+      //   },
+      // });
+      navigation.reset({
+        index: 0,
+        routes: [
+          {
+            name: "Main",
+            params: { screen: "HomeTab", params: { screen: "Home" } },
+          },
+        ],
       });
       return;
     }
@@ -53,38 +71,40 @@ const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
   }, [isPressed]);
 
   return !isPressed ? (
-    <View style={styles.container}>
-      <Image
-        style={styles.image}
-        source={require("@assets/images/illustrations/login-illustration.png")}></Image>
-      <Text style={styles.title}>Log in</Text>
-      <View style={styles.inputContainer}>
-        <AuthInput
-          label="Email"
-          inputText={email}
-          onChangeText={setEmail}
-          placeholder="Your email"
-        />
-        <AuthInput
-          label="Password"
-          inputText={password}
-          onChangeText={setPassword}
-          placeholder="Your password"
-          secureTextEntry
-        />
-      </View>
-      <ButtonLarge title="Log in" onPress={handleLogin} />
-      <View style={styles.signUpContainer}>
-        <Text style={styles.signUpText}>
-          Don't have an account?{" "}
-          <Text
-            style={styles.signUpButton}
-            onPress={() => navigation.navigate("Signup")}>
-            Sign up
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <Image
+          style={styles.image}
+          source={require("@assets/images/illustrations/login-illustration.png")}></Image>
+        <Text style={styles.title}>Log in</Text>
+        <View style={styles.inputContainer}>
+          <AuthInput
+            label="Email"
+            inputText={email}
+            onChangeText={setEmail}
+            placeholder="Your email"
+          />
+          <AuthInput
+            label="Password"
+            inputText={password}
+            onChangeText={setPassword}
+            placeholder="Your password"
+            secureTextEntry
+          />
+        </View>
+        <ButtonLarge title="Log in" onPress={handleLogin} />
+        <View style={styles.signUpContainer}>
+          <Text style={styles.signUpText}>
+            Don't have an account?{" "}
+            <Text
+              style={styles.signUpButton}
+              onPress={() => navigation.navigate("Signup")}>
+              Sign up
+            </Text>
           </Text>
-        </Text>
+        </View>
       </View>
-    </View>
+    </TouchableWithoutFeedback>
   ) : (
     <Alert
       type="auth"
