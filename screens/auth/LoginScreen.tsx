@@ -1,5 +1,12 @@
-import { useState, useEffect } from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { useState } from "react";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from "react-native";
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
@@ -9,9 +16,8 @@ import {
 } from "@appTypes/navigation/navigationTypes";
 import AuthInput from "@components/inputs/AuthInput";
 import ButtonLarge from "@components/buttons/ButtonLarge";
-import Alert from "@components/alert/Alert";
 
-import { login } from "@services/authServices"
+import { login } from "@services/authServices";
 
 type LoginScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<AuthStackParamList, "Login">,
@@ -23,60 +29,76 @@ const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
 }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isPressed, setIsPressed] = useState<boolean>(false);
 
   const handleLogin = async () => {
-    const { isSuccess, msg } = await login(email, password);
+    // TODO: handle login logic here ...
+    if (!isPressed) {
+      // Disable login button
+      setIsPressed(true);
 
-    // if authenticated, navigate to the Home screen
-    // else,show pop up alert
-    if (isSuccess) {
-      navigation.navigate("Main", {
-        screen: "HomeTab",
-        params: {
-          screen: "Home",
-        },
-      });
-      return;
+      // Login logic
+      const { isSuccess, msg } = await login(email, password);
+
+      // If authenticated, navigate to the Home screen
+      // Else, show pop up alert
+      if (isSuccess) {
+        navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: "Main",
+              params: { screen: "HomeTab", params: { screen: "Home" } },
+            },
+          ],
+        });
+        return;
+      }
+
+      // show the alert pop up
+      alert(msg);
     }
 
-    // show the alert pop up
-    alert(msg)
+    // Enable login button
+    setIsPressed(false);
   };
 
   return (
-    <View style={styles.container}>
-      <Image
-        style={styles.image}
-        source={require("@assets/images/illustrations/login-illustration.png")}></Image>
-      <Text style={styles.title}>Log in</Text>
-      <View style={styles.inputContainer}>
-        <AuthInput
-          label="Email"
-          inputText={email}
-          onChangeText={setEmail}
-          placeholder="Your email"
-        />
-        <AuthInput
-          label="Password"
-          inputText={password}
-          onChangeText={setPassword}
-          placeholder="Your password"
-          secureTextEntry
-        />
-      </View>
-      <ButtonLarge title="Log in" onPress={handleLogin} />
-      <View style={styles.signUpContainer}>
-        <Text style={styles.signUpText}>
-          Don't have an account?{" "}
-          <Text
-            style={styles.signUpButton}
-            onPress={() => navigation.navigate("Signup")}>
-            Sign up
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <Image
+          style={styles.image}
+          source={require("@assets/images/illustrations/login-illustration.png")}></Image>
+        <Text style={styles.title}>Log in</Text>
+        <View style={styles.inputContainer}>
+          <AuthInput
+            label="Email"
+            inputText={email}
+            onChangeText={setEmail}
+            placeholder="Your email"
+          />
+          <AuthInput
+            label="Password"
+            inputText={password}
+            onChangeText={setPassword}
+            placeholder="Your password"
+            secureTextEntry
+          />
+        </View>
+        <ButtonLarge title="Log in" onPress={handleLogin} />
+        <View style={styles.signUpContainer}>
+          <Text style={styles.signUpText}>
+            Don't have an account?{" "}
+            <Text
+              style={styles.signUpButton}
+              onPress={() => navigation.navigate("Signup")}>
+              Sign up
+            </Text>
           </Text>
-        </Text>
+        </View>
       </View>
-    </View>
-  )
+    </TouchableWithoutFeedback>
+  );
 };
 
 const styles = StyleSheet.create({
