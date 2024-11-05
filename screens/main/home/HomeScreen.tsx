@@ -5,10 +5,10 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  Image,
   ScrollView,
+  TouchableWithoutFeedback,
 } from "react-native";
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { StackNavigationProp } from "@react-navigation/stack";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { CompositeNavigationProp } from "@react-navigation/native";
@@ -17,6 +17,8 @@ import {
   HomeStackParamList,
   RootStackParamList,
 } from "@appTypes/navigation/navigationTypes";
+import { CarData } from "@appTypes/cars/carTypes";
+
 import Input from "@components/inputs/Input";
 import SubHeader from "@components/headers/SubHeader";
 import ToggleButton from "@components/buttons/ToggleButton";
@@ -26,7 +28,7 @@ import CardCar from "@components/cars/CardCar";
 import CardCarHeader from "@components/cars/CardCarHeader";
 import ImageContain from "@components/images/ImageContain";
 
-import { getCars } from "@services/homeServices"
+// import { getCars } from "@services/homeServices"
 
 type HomeScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<HomeStackParamList, "Home">,
@@ -50,64 +52,54 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
   navigation,
 }) => {
   // NOTE: Mock up cars (Don't forget to remove)
-  const allCars = [
+  const allCars: CarData[] = [
     {
-      location: ["Bangkok", "Phuket"],
+      id: Math.round(Math.random() * 10000),
       make: "Honda",
       model: "Civic",
       color: "White",
-      price: 1500,
+      seats: 5,
+      horse_power: 300,
+      transmission: "auto",
+      year_produced: 2023,
+      rental_price: 1500,
+      available_location: ["Bangkok", "Chiang Mai"],
     },
-    {
-      location: ["Phuket", "Chiang Mai"],
-      make: "Honda",
-      model: "Civic",
-      color: "Black",
-      price: 1500,
-    },
-    {
-      location: ["Bangkok"],
-      make: "Benz",
-      model: "Maybach S580",
-      color: "Silver",
-      price: 9000,
-    },
-  ];
-  const allLocations = ["Bangkok", "Phuket", "Chiang Mai"];
-  const popularCars = [
     {
       id: Math.round(Math.random() * 10000),
       make: "Mercedez-Benz",
       model: "Maybach S580",
-      color: "black",
+      color: "Black",
       seats: 5,
       horse_power: 600,
       transmission: "auto",
-      year_produced: "2023",
-      rental_price: "9000",
+      year_produced: 2023,
+      rental_price: 1500,
+      available_location: ["Bangkok", "Phuket"],
     },
     {
       id: Math.round(Math.random() * 10000),
       make: "Mercedez-Benz",
       model: "AMG G63",
-      color: "silver",
+      color: "Silver",
       seats: 7,
       horse_power: 750,
       transmission: "auto",
-      year_produced: "2022",
-      rental_price: "15000",
+      year_produced: 2024,
+      rental_price: 1500,
+      available_location: ["Phuket"],
     },
   ];
+  const allLocations = ["Bangkok", "Phuket", "Chiang Mai"];
 
-  const [searchResults, setSearchResults] = useState(popularCars);
-
+  const [searchResults, setSearchResults] = useState<CarData[]>([]);
   const [makes, setMakes] = useState<string[]>([]);
   const [models, setModels] = useState<string[]>([]);
   const [colors, setColors] = useState<string[]>([]);
 
   const [filter, setFilter] = useState<CarFilterType>({
     searchInput: "",
-    pickupDate: undefined,
+    pickupDate: new Date(Date.now()),
     priceRange: {
       minPice: 0,
       maxPrice: 50000,
@@ -129,14 +121,15 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
       ...searchResults,
       {
         id: Math.round(Math.random() * 10000),
-        make: "Mercedez-Benz",
-        model: "Maybach S580",
-        color: "black",
+        make: "Honda",
+        model: "Civic",
+        color: "White",
         seats: 5,
-        horse_power: 600,
+        horse_power: 300,
         transmission: "auto",
-        year_produced: "2023",
-        rental_price: "9000",
+        year_produced: 2023,
+        rental_price: 1500,
+        available_location: ["Bangkok", "Chiang Mai"],
       },
     ];
 
@@ -159,7 +152,9 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
 
     allCars.forEach((car) => {
       if (
-        selectedLocation.some((location) => car.location.includes(location))
+        selectedLocation.some((location) =>
+          car.available_location.includes(location)
+        )
       ) {
         makesSet.add(car.make);
       }
@@ -217,6 +212,9 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
   // TODO: retrieve popular cars list here ...
   useEffect(() => {
     // Get popular car list and display when first render
+
+    // Mock up
+    setSearchResults([allCars[1], allCars[2]]);
   }, []);
 
   // TODO: handle location selection ...
@@ -261,19 +259,21 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
             </TouchableOpacity>
           </View>
           <SubHeader title="Pick-up date" />
-          <View style={styles.input}>
-            <MaterialIcons name="calendar-month" size={18} color="#656F77" />
-            <Text
-              style={[
-                styles.inputText,
-                { color: filter.pickupDate ? "black" : "#bbbbbb" },
-              ]}
-              onPress={() => setShowDatePicker(!showDatePicker)}>
-              {filter.pickupDate
-                ? filter.pickupDate.toLocaleDateString("en-US")
-                : "Pick-up date"}
-            </Text>
-          </View>
+          <TouchableWithoutFeedback
+            onPress={() => setShowDatePicker(!showDatePicker)}>
+            <View style={styles.input}>
+              <MaterialIcons name="calendar-month" size={18} color="#656F77" />
+              <Text
+                style={[
+                  styles.inputText,
+                  { color: filter.pickupDate ? "black" : "#bbbbbb" },
+                ]}>
+                {filter.pickupDate
+                  ? filter.pickupDate.toLocaleDateString("en-US")
+                  : "Pick-up date"}
+              </Text>
+            </View>
+          </TouchableWithoutFeedback>
           {showDatePicker && (
             <View style={styles.datePicker}>
               <DateTimePicker
@@ -468,19 +468,21 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
               <MaterialIcons name="chevron-right" size={22} color="#A1A1A6" />
             </TouchableOpacity>
           </View>
-          <View style={styles.input}>
-            <MaterialIcons name="calendar-month" size={18} color="#656F77" />
-            <Text
-              style={[
-                styles.inputText,
-                { color: filter.pickupDate ? "black" : "#bbbbbb" },
-              ]}
-              onPress={() => setShowDatePicker(!showDatePicker)}>
-              {filter.pickupDate
-                ? filter.pickupDate.toLocaleDateString("en-US")
-                : "Pick-up date"}
-            </Text>
-          </View>
+          <TouchableWithoutFeedback
+            onPress={() => setShowDatePicker(!showDatePicker)}>
+            <View style={styles.input}>
+              <MaterialIcons name="calendar-month" size={18} color="#656F77" />
+              <Text
+                style={[
+                  styles.inputText,
+                  { color: filter.pickupDate ? "black" : "#bbbbbb" },
+                ]}>
+                {filter.pickupDate
+                  ? filter.pickupDate.toLocaleDateString("en-US")
+                  : "Pick-up date"}
+              </Text>
+            </View>
+          </TouchableWithoutFeedback>
           {showDatePicker && (
             <View style={styles.datePicker}>
               <DateTimePicker
@@ -515,6 +517,7 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
                   onPress={navigateToCarInfo}
                 />
               }
+              onPress={navigateToCarInfo}
             />
           );
         })}

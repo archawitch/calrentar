@@ -29,28 +29,38 @@ const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
 }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isPressed, setIsPressed] = useState<boolean>(false);
 
   const handleLogin = async () => {
     // TODO: handle login logic here ...
-    const { isSuccess, msg } = await login(email, password);
+    if (!isPressed) {
+      // Disable login button
+      setIsPressed(true);
 
-    // if authenticated, navigate to the Home screen
-    // else,show pop up alert
-    if (isSuccess) {
-      navigation.reset({
-        index: 0,
-        routes: [
-          {
-            name: "Main",
-            params: { screen: "HomeTab", params: { screen: "Home" } },
-          },
-        ],
-      });
-      return;
+      // Login logic
+      const { isSuccess, msg } = await login(email, password);
+
+      // If authenticated, navigate to the Home screen
+      // Else, show pop up alert
+      if (isSuccess) {
+        navigation.reset({
+          index: 0,
+          routes: [
+            {
+              name: "Main",
+              params: { screen: "HomeTab", params: { screen: "Home" } },
+            },
+          ],
+        });
+        return;
+      }
+
+      // show the alert pop up
+      alert(msg);
     }
 
-    // show the alert pop up
-    alert(msg);
+    // Enable login button
+    setIsPressed(false);
   };
 
   return (

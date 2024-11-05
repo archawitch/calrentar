@@ -3,6 +3,8 @@ import {
   StyleSheet,
   GestureResponderEvent,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
 
 type ToggleButtonProp = {

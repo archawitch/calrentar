@@ -30,22 +30,22 @@ const SignupScreen: React.FC<{ navigation: SignupScreenNavigationProp }> = ({
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isPressed, setIsPressed] = useState<boolean>(false);
 
   const handleSignup = async () => {
-    const { isSuccess, msg } = await signup(email, password, confirmPassword);
+    if (!isPressed) {
+      // Disable sign up button
+      setIsPressed(true);
 
-    // update status
-    !isSuccess ? alert(msg) : setIsAuthenticated(isSuccess);
-  };
+      // Signup logic
+      const { isSuccess, msg } = await signup(email, password, confirmPassword);
 
-  const getAlertTitle = () => {
-    if (isAuthenticated) return "Signup successfully";
-    else return "Signup failed";
-  };
+      // Update status
+      !isSuccess ? alert(msg) : setIsAuthenticated(isSuccess);
 
-  const getAlertDetails = () => {
-    if (isAuthenticated) return "Log in and enjoy our cars for rent!";
-    else return "Please check your email or password again.";
+      // Enable sign up button
+      setIsPressed(false);
+    }
   };
 
   // Toggle alert popup when clicking sign up button
@@ -106,8 +106,8 @@ const SignupScreen: React.FC<{ navigation: SignupScreenNavigationProp }> = ({
     <Alert
       type="auth"
       isSuccess={isAuthenticated}
-      title={getAlertTitle()}
-      details={getAlertDetails()}
+      title="Signup successfully"
+      details="Log in and enjoy our cars for rent!"
     />
   );
 };

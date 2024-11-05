@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableNativeFeedback,
-} from "react-native";
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useEffect, useState } from "react";
 
@@ -39,9 +33,13 @@ const CardCarHeader = (props: CardCarHeaderProp) => {
     <View style={styles.header}>
       <Image style={styles.logo} source={props.logo} />
       <Text style={styles.model}>{props.model}</Text>
-      <TouchableNativeFeedback onPress={handleFavorite}>
-        <MaterialIcons name="favorite" size={32} color="#FF5A5A" />
-      </TouchableNativeFeedback>
+      <TouchableOpacity onPress={handleFavorite}>
+        <MaterialIcons
+          name="favorite"
+          size={32}
+          color={isFavorite ? "#FF5A5A" : "#EAEAEB"}
+        />
+      </TouchableOpacity>
     </View>
   );
 };
