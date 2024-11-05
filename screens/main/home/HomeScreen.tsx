@@ -7,6 +7,8 @@ import {
 } from "@appTypes/navigation/navigationTypes";
 import { CompositeNavigationProp } from "@react-navigation/native";
 
+import { getCars } from "@services/homeServices"
+
 type HomeScreenNavigationProp = CompositeNavigationProp<
   StackNavigationProp<HomeStackParamList, "Home">,
   StackNavigationProp<RootStackParamList>

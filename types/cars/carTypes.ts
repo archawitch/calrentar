@@ -1,4 +1,5 @@
 export interface CarData {
+    id: number;
     make: string;
     model: string;
     color: string;
