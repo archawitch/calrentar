@@ -8,15 +8,10 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
 } from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { CompositeNavigationProp } from "@react-navigation/native";
 
-import {
-  HomeStackParamList,
-  RootStackParamList,
-} from "@appTypes/navigation/navigationTypes";
+import { HomeScreenProps } from "@appTypes/navigation/navigationTypes";
 import { CarData } from "@appTypes/cars/carTypes";
 
 import Input from "@components/inputs/Input";
@@ -24,16 +19,11 @@ import SubHeader from "@components/headers/SubHeader";
 import ToggleButton from "@components/buttons/ToggleButton";
 import Header from "@components/headers/Header";
 import ButtonSmall from "@components/buttons/ButtonSmall";
-import CardCar from "@components/cars/CardCar";
-import CardCarHeader from "@components/cars/CardCarHeader";
+import CardCarRent from "@components/cars/CardCarRent";
+import CardCarRentHeader from "@components/cars/CardCarRentHeader";
 import ImageContain from "@components/images/ImageContain";
 
 // import { getCars } from "@services/homeServices"
-
-type HomeScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<HomeStackParamList, "Home">,
-  StackNavigationProp<RootStackParamList>
->;
 
 type CarFilterType = {
   searchInput: string;
@@ -48,9 +38,7 @@ type CarFilterType = {
   colors: string[];
 };
 
-const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
-  navigation,
-}) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   // NOTE: Mock up cars (Don't forget to remove)
   const allCars: CarData[] = [
     {
@@ -60,7 +48,7 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
       color: "White",
       seats: 5,
       horse_power: 300,
-      transmission: "auto",
+      transmission: "Auto",
       year_produced: 2023,
       rental_price: 1500,
       available_location: ["Bangkok", "Chiang Mai"],
@@ -72,7 +60,7 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
       color: "Black",
       seats: 5,
       horse_power: 600,
-      transmission: "auto",
+      transmission: "Auto",
       year_produced: 2023,
       rental_price: 1500,
       available_location: ["Bangkok", "Phuket"],
@@ -84,7 +72,7 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
       color: "Silver",
       seats: 7,
       horse_power: 750,
-      transmission: "auto",
+      transmission: "Manual",
       year_produced: 2024,
       rental_price: 1500,
       available_location: ["Phuket"],
@@ -109,12 +97,17 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
     models: [],
     colors: [],
   });
+  const [currentPickupDate, setCurrentPickupDate] = useState<Date | undefined>(
+    new Date(Date.now())
+  );
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
 
   // NOTE: Handle searching based on filters
   const handleSearch = () => {
     // TODO: handle searching cars here ...
+    // Use data from filter<CarFilterType>
+    // const f: CarFilterType = filter
 
     // Mock up
     const newSearchResults = [
@@ -135,11 +128,15 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
 
     // Parse search results
     setSearchResults(newSearchResults);
+    setCurrentPickupDate(filter.pickupDate);
   };
 
   // NOTE: Handle to navigate to car information
-  const navigateToCarInfo = () => {
-    navigation.navigate("CarInformation");
+  const navigateToCarInfo = (car: CarData, pickupDate: Date) => {
+    navigation.navigate("CarDetails", {
+      carData: car,
+      pickupDate: pickupDate,
+    });
   };
 
   // NOTE: Get car makes based on car location
@@ -205,6 +202,8 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
 
   // TODO: retrieve car image by id here ...
   const getCarImage = (id: number) => {
+    // TODO:  Get car image (side)
+
     // Mock up
     return require("@assets/images/illustrations/signup-illustration.png");
   };
@@ -217,7 +216,7 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
     setSearchResults([allCars[1], allCars[2]]);
   }, []);
 
-  // TODO: handle location selection ...
+  // NOTE: handle location selection ...
   useEffect(() => {
     const newMakes = getMakes();
     setMakes(newMakes);
@@ -227,7 +226,7 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
     }));
   }, [filter.location]);
 
-  // TODO: handle makes selection
+  // NOTE: handle makes selection
   useEffect(() => {
     const newModels = getModels();
     setModels(newModels);
@@ -237,7 +236,7 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
     }));
   }, [filter.makes]);
 
-  // TODO: handle models selection
+  // NOTE: handle models selection
   useEffect(() => {
     const newColors = getColors();
     setColors(newColors);
@@ -258,39 +257,6 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
               <MaterialIcons name="close" size={32} color="black" />
             </TouchableOpacity>
           </View>
-          <SubHeader title="Pick-up date" />
-          <TouchableWithoutFeedback
-            onPress={() => setShowDatePicker(!showDatePicker)}>
-            <View style={styles.input}>
-              <MaterialIcons name="calendar-month" size={18} color="#656F77" />
-              <Text
-                style={[
-                  styles.inputText,
-                  { color: filter.pickupDate ? "black" : "#bbbbbb" },
-                ]}>
-                {filter.pickupDate
-                  ? filter.pickupDate.toLocaleDateString("en-US")
-                  : "Pick-up date"}
-              </Text>
-            </View>
-          </TouchableWithoutFeedback>
-          {showDatePicker && (
-            <View style={styles.datePicker}>
-              <DateTimePicker
-                testID="dateTimePickerFilter"
-                value={filter.pickupDate ?? new Date(Date.now())}
-                mode="date"
-                display="inline"
-                onChange={(event, selectedDate) => {
-                  setFilter((prev) => ({
-                    ...prev,
-                    pickupDate: selectedDate ?? new Date(Date.now()),
-                  }));
-                  setShowDatePicker(false);
-                }}
-              />
-            </View>
-          )}
           <SubHeader title="Price range (THB/day)" />
           <View style={{ flexDirection: "row", gap: 10 }}>
             <Input
@@ -503,21 +469,34 @@ const HomeScreen: React.FC<{ navigation: HomeScreenNavigationProp }> = ({
         </View>
         <ButtonSmall title="Search" onPress={handleSearch} />
         <SubHeader title="Popular Cars" />
-        {searchResults.map((car) => {
+        {searchResults.map((carData) => {
           return (
-            <CardCar
-              key={car.id}
+            <CardCarRent
+              key={carData.id}
               header={
-                <CardCarHeader logo={getLogo(car.make)} model="Maybach S580" />
-              }
-              image={<ImageContain source={getCarImage(car.id)} />}
-              button={
-                <ButtonSmall
-                  title={`Rent now at ${car.rental_price}THB/day`}
-                  onPress={navigateToCarInfo}
+                <CardCarRentHeader
+                  logo={getLogo(carData.make)}
+                  model={carData.model}
                 />
               }
-              onPress={navigateToCarInfo}
+              image={<ImageContain source={getCarImage(carData.id)} />}
+              button={
+                <ButtonSmall
+                  title={`Rent now at ${carData.rental_price} THB/day`}
+                  onPress={() =>
+                    navigateToCarInfo(
+                      carData,
+                      currentPickupDate ?? new Date(Date.now())
+                    )
+                  }
+                />
+              }
+              onPress={() =>
+                navigateToCarInfo(
+                  carData,
+                  currentPickupDate ?? new Date(Date.now())
+                )
+              }
             />
           );
         })}
@@ -537,10 +516,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 16,
     gap: 16,
-  },
-  title: {
-    fontFamily: "Poppins_600SemiBold",
-    fontSize: 28,
   },
   inputContainer: {
     gap: 10,
@@ -565,53 +540,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#EBEBEB",
     borderRadius: 8,
-  },
-  button: {
-    alignItems: "center",
-    paddingVertical: 12,
-    borderRadius: 10,
-    backgroundColor: "#2B2930",
-  },
-  buttonText: {
-    fontFamily: "Poppins_600SemiBold",
-    fontSize: 16,
-    color: "white",
-  },
-  subtitle: {
-    fontFamily: "Poppins_600SemiBold",
-    fontSize: 24,
-    marginTop: 16,
-  },
-  card: {
-    backgroundColor: "white",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    width: "100%",
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "#EBEBEB",
-  },
-  cardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  cardLogo: {
-    width: 32,
-    height: 32,
-  },
-  carName: {
-    fontSize: 18,
-    flex: 1,
-  },
-  cardCar: {
-    flexDirection: "row",
-    paddingVertical: 10,
-  },
-  cardCarImage: {
-    flex: 1,
-    width: "100%",
-    resizeMode: "contain",
   },
 });
 

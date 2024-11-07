@@ -26,10 +26,7 @@ interface DetailsScreenProps {
   navigation: any;
 }
 
-const DetailsScreen: React.FC<{
-  route: DetailsScreenRouteProp;
-  navigation: DetailsScreenNavigationProp;
-}> = ({ route, navigation }) => {
+const DetailsScreen: React.FC<DetailsScreenProps> = ({ route, navigation }) => {
   const { res_data, updateReviews } = route.params;
   const reviews = res_data.reviews;
   console.log(reviews.length);

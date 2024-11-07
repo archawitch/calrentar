@@ -3,19 +3,17 @@ import {
   StyleSheet,
   GestureResponderEvent,
   TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
 } from "react-native";
 
 type ToggleButtonProp = {
   title: string;
   isActive: boolean;
-  onPress: ((event: GestureResponderEvent) => void) | undefined;
+  onPress?: ((event: GestureResponderEvent) => void) | undefined;
 };
 
 const ToggleButton = (props: ToggleButtonProp) => {
   const bgColor = props.isActive ? "#2B2930" : "white";
-  const textColor = props.isActive ? "white" : "black";
+  const textColor = props.isActive ? "white" : "#A1A1A6";
   const borderColor = props.isActive ? "black" : "#cccccc";
 
   return (
