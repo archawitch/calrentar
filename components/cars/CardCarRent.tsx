@@ -7,14 +7,14 @@ import {
 
 import React from "react";
 
-type CardCarProp = {
+type CardCarRentProp = {
   image: React.ReactNode;
   header: React.ReactNode;
   button: React.ReactNode;
   onPress?: ((event: GestureResponderEvent) => void) | undefined;
 };
 
-const CardCar = (props: CardCarProp) => {
+const CardCarRent = (props: CardCarRentProp) => {
   return (
     <View style={styles.card}>
       <TouchableWithoutFeedback onPress={props.onPress}>
@@ -40,4 +40,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CardCar;
+export default CardCarRent;

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StyleSheet, SafeAreaView, Dimensions } from "react-native";
+import { StyleSheet, SafeAreaView, Dimensions, LogBox } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import {
   useFonts,
@@ -12,6 +12,9 @@ import {
 import RootNavigation from "@navigation/RootNavigation";
 
 SplashScreen.preventAutoHideAsync();
+LogBox.ignoreLogs([
+  "Non-serializable values were found in the navigation state",
+]);
 
 const App: React.FC = () => {
   // Loading fonts

@@ -15,7 +15,7 @@ import {
 import LoginScreen from "@screens/auth/LoginScreen";
 import SignupScreen from "@screens/auth/SignupScreen";
 import HomeScreen from "@screens/main/home/HomeScreen";
-// import CarInformationScreen from "../screens/Main/Home/CarInformationScreen";
+import CarDetailsScreen from "@screens/main/home/CarDetailsScreen";
 // import RentInformationScreen from "../screens/Main/Home/RentInformationScreen";
 // import RentConfirmationScreen from "../screens/Main/Home/RentConfirmationScreen";
 // import HistoryScreen from "../screens/Main/History/HistoryScreen";
@@ -57,8 +57,8 @@ function HomeNavigator() {
         options={{ headerShown: false }}
       />
       <HomeStack.Screen
-        name="CarInformation"
-        component={LoginScreen}
+        name="CarDetails"
+        component={CarDetailsScreen}
         options={{ headerShown: false }}
       />
       <HomeStack.Screen

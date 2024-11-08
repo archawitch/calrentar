@@ -1,4 +1,11 @@
-import { NavigatorScreenParams } from "@react-navigation/native";
+import {
+  NavigatorScreenParams,
+  RouteProp,
+  CompositeNavigationProp,
+} from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+
+import { CarData } from "@appTypes/cars/carTypes";
 
 export type AuthStackParamList = {
   Login: undefined;
@@ -7,7 +14,10 @@ export type AuthStackParamList = {
 
 export type HomeStackParamList = {
   Home: undefined;
-  CarInformation: undefined;
+  CarDetails: {
+    carData: CarData;
+    pickupDate?: Date | undefined;
+  };
   RentInformation: undefined;
   RentConfirmation: undefined;
 };
@@ -28,3 +38,18 @@ export type RootStackParamList = {
   Auth: NavigatorScreenParams<AuthStackParamList>;
   Main: NavigatorScreenParams<MainTabParamList>;
 };
+
+export interface HomeScreenProps {
+  navigation: CompositeNavigationProp<
+    StackNavigationProp<HomeStackParamList, "Home">,
+    StackNavigationProp<RootStackParamList>
+  >;
+}
+
+export interface CarDetailsScreenProps {
+  route: RouteProp<HomeStackParamList, "CarDetails">;
+  navigation: CompositeNavigationProp<
+    StackNavigationProp<HomeStackParamList, "CarDetails">,
+    StackNavigationProp<RootStackParamList>
+  >;
+}
