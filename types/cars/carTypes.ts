@@ -6,7 +6,7 @@ export interface Car {
   rental_price: number;
   rent_count: number;
   rent_date: {
-    [date: string]: boolean
+    [date: string]: boolean;
   };
   available_location: string[];
 }
@@ -21,7 +21,7 @@ export interface CarDetail {
 
 export interface CarFilterType {
   searchInput: string;
-  pickupDate: Date | undefined;
+  pickupDate: Date;
   priceRange: {
     minPrice: number | undefined;
     maxPrice: number | undefined;
@@ -30,7 +30,7 @@ export interface CarFilterType {
   makes: string[];
   models: string[];
   colors: string[];
-};
+}
 
 export type CarMake =
   | "Toyota"

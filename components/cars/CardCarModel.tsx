@@ -2,19 +2,21 @@ import { View, Text, StyleSheet, Image } from "react-native";
 
 import ImageContain from "@components/images/ImageContain";
 
+import { Car } from "@appTypes/cars/carTypes";
+
+import { getCarLogo, getCarImage } from "@services/homeServices";
+
 type CardCarRentProp = {
-  image: any;
-  logo: any;
-  model: string;
+  carData: Car;
 };
 
 const CardCarModel = (props: CardCarRentProp) => {
   return (
     <View style={styles.card}>
-      <ImageContain source={props.image} />
+      <ImageContain source={getCarImage(props.carData.id)} />
       <View style={styles.textContainer}>
-        <Image style={styles.logo} source={props.logo} />
-        <Text style={styles.text}>{props.model}</Text>
+        <Image style={styles.logo} source={getCarLogo(props.carData.make)} />
+        <Text style={styles.text}>{props.carData.model}</Text>
       </View>
     </View>
   );
@@ -38,7 +40,7 @@ const styles = StyleSheet.create({
     height: 32,
   },
   text: {
-    fontSize: 16,
+    fontSize: 18,
   },
 });
 

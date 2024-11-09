@@ -6,6 +6,7 @@ import {
 import { StackNavigationProp } from "@react-navigation/stack";
 
 import { Car } from "@appTypes/cars/carTypes";
+import { RentFormType } from "@appTypes/screens/screenTypes";
 
 export type AuthStackParamList = {
   Login: undefined;
@@ -16,10 +17,16 @@ export type HomeStackParamList = {
   Home: undefined;
   CarDetails: {
     carData: Car;
-    pickupDate?: Date | undefined;
+    pickupDate: Date;
   };
-  RentInformation: undefined;
-  RentConfirmation: undefined;
+  RentForm: {
+    carData: Car;
+    pickupDate: Date;
+  };
+  RentConfirmation: {
+    carData: Car;
+    rentForm: RentFormType;
+  };
 };
 
 export type HistoryStackParamList = {
@@ -50,6 +57,22 @@ export interface CarDetailsScreenProps {
   route: RouteProp<HomeStackParamList, "CarDetails">;
   navigation: CompositeNavigationProp<
     StackNavigationProp<HomeStackParamList, "CarDetails">,
+    StackNavigationProp<RootStackParamList>
+  >;
+}
+
+export interface RentFormScreenProps {
+  route: RouteProp<HomeStackParamList, "RentForm">;
+  navigation: CompositeNavigationProp<
+    StackNavigationProp<HomeStackParamList, "RentForm">,
+    StackNavigationProp<RootStackParamList>
+  >;
+}
+
+export interface RentConfirmationScreenProps {
+  route: RouteProp<HomeStackParamList, "RentConfirmation">;
+  navigation: CompositeNavigationProp<
+    StackNavigationProp<HomeStackParamList, "RentConfirmation">,
     StackNavigationProp<RootStackParamList>
   >;
 }

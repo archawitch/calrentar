@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: "Poppins_400Regular",
-    fontSize: 18,
+    fontSize: 17,
   },
   input: {
     fontFamily: "Poppins_400Regular",

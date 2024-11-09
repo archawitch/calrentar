@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, StyleSheet, Image } from "react-native";
+import { ScrollView, View, StyleSheet } from "react-native";
 
 import { CarDetailsScreenProps } from "@appTypes/navigation/navigationTypes";
 import Header from "@components/headers/Header";
@@ -37,39 +37,18 @@ const CarDetailsScreen: React.FC<CarDetailsScreenProps> = ({
     fetchCarDetail(carData.id);
   }, []);
 
-  // TODO: Get car image (front) by id
-  const getCarImage = (id: number) => {
-    // Mock up
-    return require("@assets/images/illustrations/signup-illustration.png");
-  };
-
-  // TODO: Get car logo by make
-  const getCarLogo = (make: string) => {
-    // Mock up
-    return require("@assets/images/illustrations/login-illustration.png");
-  };
-
   const navigateToRentInfo = () => {
-    // navigation.navigate("RentInformation", {
-    //   carData: carData,
-    //   pickupDate: pickupDate
-    // })
+    navigation.navigate("RentForm", {
+      carData: carData,
+      pickupDate: pickupDate,
+    });
   };
 
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.container}>
-        <Header
-          title="Car details"
-          goBack={() => {
-            navigation.navigate("Home");
-          }}
-        />
-        <CardCarModel
-          image={getCarImage(carData.id)}
-          logo={getCarLogo(carData.model)}
-          model={carData.model}
-        />
+        <Header title="Car details" goBack={() => navigation.goBack()} />
+        <CardCarModel carData={carData} />
         <View style={styles.propertiesContainer}>
           <CarProperty iconName="event-seat" title={`${carDetail.seats} seats`} />
           <CarProperty
@@ -82,7 +61,7 @@ const CarDetailsScreen: React.FC<CarDetailsScreenProps> = ({
             title={String(carDetail.year_produced)}
           />
         </View>
-        <SubHeader title="Colors" />
+        <SubHeader title="Color" />
         <View style={styles.buttonsContainer}>
           <ToggleButton title={carData.color} isActive />
         </View>
@@ -90,7 +69,12 @@ const CarDetailsScreen: React.FC<CarDetailsScreenProps> = ({
         <View style={[styles.buttonsContainer, { paddingBottom: 20 }]}>
           {carData.available_location.map((location) => {
             return (
-              <ToggleButton key={location} title={location} isActive={false} />
+              <ToggleButton
+                key={location}
+                title={location}
+                isActive={false}
+                disabled
+              />
             );
           })}
         </View>
@@ -110,7 +94,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    paddingVertical: 24,
+    paddingTop: 16,
+    paddingBottom: 40,
     paddingHorizontal: 28,
     backgroundColor: "white",
     gap: 16,

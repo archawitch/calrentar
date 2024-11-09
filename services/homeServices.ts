@@ -1,10 +1,4 @@
-import {
-  ref,
-  get,
-  query,
-  limitToFirst,
-  orderByChild,
-} from "firebase/database";
+import { ref, get, query, limitToFirst, orderByChild } from "firebase/database";
 
 import { database } from "@configs/firebaseConfig";
 
@@ -51,7 +45,11 @@ export const getLocations = async (): Promise<string[] | void> => {
 };
 
 export const getTopFive = async (): Promise<Car[] | void> => {
-  const dataRef = query(ref(database, "cars"), orderByChild("rent_count"), limitToFirst(5));
+  const dataRef = query(
+    ref(database, "cars"),
+    orderByChild("rent_count"),
+    limitToFirst(5)
+  );
 
   try {
     const snapshot = await get(dataRef);
@@ -68,10 +66,10 @@ export const getTopFive = async (): Promise<Car[] | void> => {
     console.log(`TopFiveCars: ${error}`);
     return;
   }
-}
+};
 
 export const getCarLogo = (make: string) => {
-  const carLogo: Record<string, string> = {
+  const carLogo: Record<string, any> = {
     Toyota: require("@assets/images/illustrations/login-illustration.png"),
     Honda: require("@assets/images/illustrations/login-illustration.png"),
     Chevrolet: require("@assets/images/illustrations/login-illustration.png"),
@@ -90,7 +88,7 @@ export const getCarLogo = (make: string) => {
 };
 
 export const getCarImage = (id: number) => {
-  const carImage: Record<number, string> = {
+  const carImage: Record<number, any> = {
     0: require("@assets/images/illustrations/signup-illustration.png"),
     1: require("@assets/images/illustrations/signup-illustration.png"),
     2: require("@assets/images/illustrations/signup-illustration.png"),

@@ -20,16 +20,8 @@ import ToggleButton from "@components/buttons/ToggleButton";
 import Header from "@components/headers/Header";
 import ButtonSmall from "@components/buttons/ButtonSmall";
 import CardCarRent from "@components/cars/CardCarRent";
-import CardCarRentHeader from "@components/cars/CardCarRentHeader";
-import ImageContain from "@components/images/ImageContain";
 
-import {
-  getCars,
-  getLocations,
-  getTopFive,
-  getCarLogo,
-  getCarImage,
-} from "@services/homeServices";
+import { getCars, getLocations, getTopFive } from "@services/homeServices";
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [allCars, setAllCars] = useState<Car[]>([]);
@@ -52,7 +44,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     models: [],
     colors: [],
   });
-  const [currentPickupDate, setCurrentPickupDate] = useState<Date | undefined>(
+  const [currentPickupDate, setCurrentPickupDate] = useState<Date>(
     new Date(Date.now())
   );
   const [showFilter, setShowFilter] = useState<boolean>(false);
@@ -60,9 +52,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   // NOTE: Handle searching based on filters
   const handleSearch = () => {
-    // TODO: handle searching cars here ...
-    // Use data from filter<CarFilterType>
-    // const f: CarFilterType = filter
     const {
       searchInput,
       pickupDate,
@@ -221,7 +210,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     }
   };
 
-  // TODO: retrieve popular cars list here ...
+  // NOTE: retrieve popular cars list here ...
   useEffect(() => {
     fetchCars();
     fetchLocation();
@@ -258,6 +247,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     }));
   }, [filter.models]);
 
+  // NOTE: handle filter changed
+  useEffect(() => {
+    handleSearch();
+  }, [filter]);
+
   // Render Filter screen
   if (showFilter) {
     return (
@@ -276,10 +270,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               inputMode="numeric"
               iconName="attach-money"
               onChangeText={(newInput: string) => {
+                if (newInput.trim() === "") newInput = "0";
                 setFilter((prev) => ({
                   ...prev,
                   priceRange: {
-                    minPrice: Number(newInput),
+                    minPrice: parseInt(newInput),
                     maxPrice: prev.priceRange.minPrice,
                   },
                 }));
@@ -290,11 +285,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               inputMode="numeric"
               iconName="attach-money"
               onChangeText={(newInput: string) => {
+                if (newInput.trim() === "") newInput = "0";
                 setFilter((prev) => ({
                   ...prev,
                   priceRange: {
                     minPrice: prev.priceRange.minPrice,
-                    maxPrice: Number(newInput),
+                    maxPrice: parseInt(newInput),
                   },
                 }));
               }}
@@ -306,8 +302,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               flexDirection: "row",
               flexWrap: "wrap",
               gap: 10,
-            }}
-          >
+            }}>
             {allLocations.map((location) => (
               <ToggleButton
                 key={location}
@@ -326,8 +321,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 flexDirection: "row",
                 flexWrap: "wrap",
                 gap: 10,
-              }}
-            >
+              }}>
               {makes.map((make) => (
                 <ToggleButton
                   key={make}
@@ -347,8 +341,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 flexDirection: "row",
                 flexWrap: "wrap",
                 gap: 10,
-              }}
-            >
+              }}>
               {models.map((model) => (
                 <ToggleButton
                   key={model}
@@ -368,8 +361,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 flexDirection: "row",
                 flexWrap: "wrap",
                 gap: 10,
-              }}
-            >
+              }}>
               {colors.map((color) => (
                 <ToggleButton
                   key={color}
@@ -411,16 +403,14 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             </TouchableOpacity>
           </View>
           <TouchableWithoutFeedback
-            onPress={() => setShowDatePicker(!showDatePicker)}
-          >
+            onPress={() => setShowDatePicker(!showDatePicker)}>
             <View style={styles.input}>
               <MaterialIcons name="calendar-month" size={18} color="#656F77" />
               <Text
                 style={[
                   styles.inputText,
                   { color: filter.pickupDate ? "black" : "#bbbbbb" },
-                ]}
-              >
+                ]}>
                 {filter.pickupDate
                   ? filter.pickupDate.toLocaleDateString("en-US")
                   : "Pick-up date"}
@@ -451,30 +441,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           return (
             <CardCarRent
               key={carData.id}
-              header={
-                <CardCarRentHeader
-                  logo={getCarLogo(carData.make)}
-                  model={carData.model}
-                />
-              }
-              image={<ImageContain source={getCarImage(carData.id)} />}
-              button={
-                <ButtonSmall
-                  title={`Rent now at ${carData.rental_price} THB/day`}
-                  onPress={() =>
-                    navigateToCarInfo(
-                      carData,
-                      currentPickupDate ?? new Date(Date.now())
-                    )
-                  }
-                />
-              }
-              onPress={() =>
-                navigateToCarInfo(
-                  carData,
-                  currentPickupDate ?? new Date(Date.now())
-                )
-              }
+              carData={carData}
+              onPress={() => navigateToCarInfo(carData, currentPickupDate)}
             />
           );
         })}
@@ -492,7 +460,8 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingTop: 16,
+    paddingBottom: 20,
     gap: 16,
   },
   inputContainer: {
