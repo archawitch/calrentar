@@ -16,9 +16,12 @@ export type HomeStackParamList = {
   Home: undefined;
   CarDetails: {
     carData: CarData;
-    pickupDate?: Date | undefined;
+    pickupDate: Date;
   };
-  RentInformation: undefined;
+  RentForm: {
+    carData: CarData;
+    pickupDate: Date;
+  };
   RentConfirmation: undefined;
 };
 
@@ -50,6 +53,13 @@ export interface CarDetailsScreenProps {
   route: RouteProp<HomeStackParamList, "CarDetails">;
   navigation: CompositeNavigationProp<
     StackNavigationProp<HomeStackParamList, "CarDetails">,
+    StackNavigationProp<RootStackParamList>
+  >;
+}
+export interface RentFormScreenProps {
+  route: RouteProp<HomeStackParamList, "RentForm">;
+  navigation: CompositeNavigationProp<
+    StackNavigationProp<HomeStackParamList, "RentForm">,
     StackNavigationProp<RootStackParamList>
   >;
 }

@@ -14,6 +14,7 @@ import RootNavigation from "@navigation/RootNavigation";
 SplashScreen.preventAutoHideAsync();
 LogBox.ignoreLogs([
   "Non-serializable values were found in the navigation state",
+  "firebase/auth: Auth",
 ]);
 
 const App: React.FC = () => {

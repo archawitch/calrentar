@@ -1,13 +1,20 @@
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  GestureResponderEvent,
+} from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 type InputProp = {
-  value: string;
+  value?: string;
   iconName?: any;
   inputMode?: any;
   placeholder?: string;
   secureTextEntry?: boolean;
-  onChangeText: (text: string) => void;
+  editable?: boolean;
+  onPress?: ((event: GestureResponderEvent) => void) | undefined;
+  onChangeText?: (text: string) => void;
 };
 
 const Input = (props: InputProp) => {
@@ -18,11 +25,14 @@ const Input = (props: InputProp) => {
       )}
       <TextInput
         style={styles.input}
-        onChangeText={props.onChangeText}
         placeholder={props.placeholder}
         secureTextEntry={props.secureTextEntry}
         inputMode={props.inputMode ? props.inputMode : "text"}
+        editable={props.editable}
+        selectTextOnFocus={props.editable}
         value={props.value}
+        onPress={props.onPress}
+        onChangeText={props.onChangeText}
       />
     </View>
   );
@@ -38,11 +48,12 @@ const styles = StyleSheet.create({
     borderColor: "#EBEBEB",
     borderRadius: 8,
     padding: 10,
-    gap: 10,
+    gap: 4,
   },
   input: {
     fontSize: 16,
     flex: 1,
+    paddingLeft: 6,
   },
 });
 

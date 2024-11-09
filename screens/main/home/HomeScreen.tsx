@@ -20,14 +20,12 @@ import ToggleButton from "@components/buttons/ToggleButton";
 import Header from "@components/headers/Header";
 import ButtonSmall from "@components/buttons/ButtonSmall";
 import CardCarRent from "@components/cars/CardCarRent";
-import CardCarRentHeader from "@components/cars/CardCarRentHeader";
-import ImageContain from "@components/images/ImageContain";
 
 // import { getCars } from "@services/homeServices"
 
-type CarFilterType = {
+interface CarFilterType {
   searchInput: string;
-  pickupDate: Date | undefined;
+  pickupDate: Date;
   priceRange: {
     minPice: number | undefined;
     maxPrice: number | undefined;
@@ -36,7 +34,7 @@ type CarFilterType = {
   makes: string[];
   models: string[];
   colors: string[];
-};
+}
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   // NOTE: Mock up cars (Don't forget to remove)
@@ -97,7 +95,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     models: [],
     colors: [],
   });
-  const [currentPickupDate, setCurrentPickupDate] = useState<Date | undefined>(
+  const [currentPickupDate, setCurrentPickupDate] = useState<Date>(
     new Date(Date.now())
   );
   const [showFilter, setShowFilter] = useState<boolean>(false);
@@ -192,20 +190,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     });
 
     return Array.from(colorsSet);
-  };
-
-  // TODO: retrieve logo image by car make here ...
-  const getLogo = (make: string) => {
-    // Mock up
-    return require("@assets/images/illustrations/login-illustration.png");
-  };
-
-  // TODO: retrieve car image by id here ...
-  const getCarImage = (id: number) => {
-    // TODO:  Get car image (side)
-
-    // Mock up
-    return require("@assets/images/illustrations/signup-illustration.png");
   };
 
   // TODO: retrieve popular cars list here ...
@@ -473,30 +457,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           return (
             <CardCarRent
               key={carData.id}
-              header={
-                <CardCarRentHeader
-                  logo={getLogo(carData.make)}
-                  model={carData.model}
-                />
-              }
-              image={<ImageContain source={getCarImage(carData.id)} />}
-              button={
-                <ButtonSmall
-                  title={`Rent now at ${carData.rental_price} THB/day`}
-                  onPress={() =>
-                    navigateToCarInfo(
-                      carData,
-                      currentPickupDate ?? new Date(Date.now())
-                    )
-                  }
-                />
-              }
-              onPress={() =>
-                navigateToCarInfo(
-                  carData,
-                  currentPickupDate ?? new Date(Date.now())
-                )
-              }
+              carData={carData}
+              onPress={() => navigateToCarInfo(carData, currentPickupDate)}
             />
           );
         })}
@@ -514,7 +476,8 @@ const styles = StyleSheet.create({
   },
   container: {
     paddingHorizontal: 20,
-    paddingVertical: 16,
+    paddingTop: 16,
+    paddingBottom: 20,
     gap: 16,
   },
   inputContainer: {
