@@ -1,25 +1,16 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 
 import ImageContain from "@components/images/ImageContain";
-import { CarData } from "@appTypes/cars/carTypes";
+
+import { Car } from "@appTypes/cars/carTypes";
+
+import { getCarLogo, getCarImage } from "@services/homeServices";
 
 type CardCarRentProp = {
-  carData: CarData;
+  carData: Car;
 };
 
 const CardCarModel = (props: CardCarRentProp) => {
-  // TODO: Get car image (front) by id
-  const getCarImage = (id: number) => {
-    // Mock up
-    return require("@assets/images/illustrations/signup-illustration.png");
-  };
-
-  // TODO: Get car logo by make
-  const getCarLogo = (make: string) => {
-    // Mock up
-    return require("@assets/images/illustrations/login-illustration.png");
-  };
-
   return (
     <View style={styles.card}>
       <ImageContain source={getCarImage(props.carData.id)} />

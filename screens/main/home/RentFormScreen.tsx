@@ -91,7 +91,6 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
         alert("Permission to access location was denied");
         return;
       }
-
       let location = await getUserLocation();
       setRegion({
         latitude: location.latitude,
@@ -105,11 +104,6 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
       });
     })();
   }, []);
-
-  // Toggle map screen when choosing a location for delivery service
-  const toggleOpenMap = () => {
-    setOpenMap(!openMap);
-  };
 
   const computeDistance = (latlng1: LatLng, latlng2: LatLng): number => {
     const toRadians = (deg: number): number => {
@@ -154,7 +148,9 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
 
   // Check if selected location is in available range, if yes, set selected location
   const handleSetLocation = (latlng: LatLng) => {
-    // Set marker data
+    console.log(latlng);
+
+    // Set marker abd region data
     setMarkerData(latlng);
 
     if (!isWithinRadius(latlng)) {
@@ -163,14 +159,6 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
     }
 
     setCurrentLatlng(latlng);
-  };
-
-  // Calculate total price to display
-  const calculateTotalPrice = () => {
-    return (
-      carData.rental_price +
-      (form.pickupType === "Delivery service" ? deliveryPrice : 0)
-    );
   };
 
   const validateForm = () => {
@@ -187,7 +175,7 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
     )
       return false;
 
-    if (form.driverLicense.trim().length !== 16) return false;
+    if (form.driverLicense.trim().length !== 8) return false;
 
     if (pickupDate.getDate() < new Date(Date.now()).getDate()) return false;
 
@@ -252,6 +240,16 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
                         6
                       )}°, ${currentLatlng.longitude.toFixed(6)}°)`,
                     }));
+                    setRegion((prev) => {
+                      if (prev) {
+                        return {
+                          latitude: currentLatlng.latitude,
+                          longitude: currentLatlng.longitude,
+                          latitudeDelta: prev.latitudeDelta,
+                          longitudeDelta: prev.longitudeDelta,
+                        };
+                      }
+                    });
                     setOpenMap(false);
                   }
                 }}
@@ -278,6 +276,7 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
                     setCurrentToggleLocation("Current");
 
                     const userLatlng = await getUserLocation();
+
                     handleSetLocation(userLatlng);
                     setRegion(() => ({
                       latitude: userLatlng.latitude,
@@ -300,7 +299,6 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
                           (loc) => loc.name === location
                         );
 
-                        // If pressed available location
                         if (locData) {
                           handleSetLocation(locData.latlng);
                           setRegion(() => ({
@@ -322,6 +320,8 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
             style={styles.map}
             region={region}
             onRegionChange={(e) => {
+              console.log(e);
+
               handleSetLocation({
                 latitude: e.latitude,
                 longitude: e.longitude,
@@ -347,11 +347,13 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
           </View>
           <SubHeader title="Pick-up date" />
           <Input
+            iconName="calendar-month"
             editable={false}
             value={pickupDate.toLocaleDateString("en-US")}
           />
           <SubHeader title="Return date" />
           <Input
+            iconName="calendar-month"
             editable={false}
             value={returnDate.toLocaleDateString("en-US")}
           />
@@ -406,10 +408,11 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
           )}
           {form.pickupType === "Delivery service" && (
             <Input
+              iconName="location-on"
               placeholder="Choose your pick-up location"
               editable={false}
               value={form.pickupLocation}
-              onPress={toggleOpenMap}
+              onPress={() => setOpenMap(true)}
             />
           )}
           <SubHeader title="Your name" />
@@ -426,6 +429,7 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
           <SubHeader title="Your driver license number" />
           <Input
             value={form.driverLicense}
+            inputMode="numeric"
             placeholder="Your driver license number"
             onChangeText={(newNumber) => {
               setForm((prev) => ({
@@ -437,9 +441,10 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
           <View style={styles.totalPriceContainer}>
             <Text style={styles.totalPrice}>Total Price</Text>
             <Text style={styles.totalPrice}>
-              {carData.rental_price +
-                (form.pickupType === "Delivery service" ? deliveryPrice : 0)}
-              THB
+              {`${
+                carData.rental_price +
+                (form.pickupType === "Delivery service" ? deliveryPrice : 0)
+              } THB`}
             </Text>
           </View>
           <ButtonLarge

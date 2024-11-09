@@ -10,34 +10,23 @@ import {
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-import { CarData } from "@appTypes/cars/carTypes";
 import ImageContain from "@components/images/ImageContain";
 import ButtonSmall from "@components/buttons/ButtonSmall";
 
+import { Car } from "@appTypes/cars/carTypes";
+
+import { getCarLogo, getCarImage } from "@services/homeServices";
+
 type CardCarRentProp = {
-  carData: CarData;
+  carData: Car;
   onPress?: ((event: GestureResponderEvent) => void) | undefined;
 };
 
 const CardCarRent = (props: CardCarRentProp) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
-  // TODO: retrieve logo image by car make here ...
-  const getCarLogo = (make: string) => {
-    // Mock up
-    return require("@assets/images/illustrations/login-illustration.png");
-  };
-
-  // TODO: retrieve car image by id here ...
-  const getCarImage = (id: number) => {
-    // TODO:  Get car image (side)
-
-    // Mock up
-    return require("@assets/images/illustrations/signup-illustration.png");
-  };
-
+  // TODO: logic when clicking favorite button
   const handleFavorite = () => {
-    // TODO: logic when clicking favorite button
     // const carId = props.id
 
     // const error = updateFavorite(carId)

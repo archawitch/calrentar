@@ -1,5 +1,9 @@
 import { View, Text, StyleSheet } from "react-native";
-import { ListDetailsType } from "@appTypes/screens/screenTypes";
+
+interface ListDetailsType {
+  title: string;
+  details: string;
+}
 
 type SubHeaderProp = {
   data: ListDetailsType[];
@@ -9,12 +13,14 @@ const ListDetails = (props: SubHeaderProp) => {
   return (
     <View style={styles.container}>
       {props.data.map((list) => {
-        return (
-          <View style={styles.list}>
-            <Text style={styles.title}>{list.title}</Text>
-            <Text style={styles.details}>{list.details}</Text>
-          </View>
-        );
+        if (list.details !== "") {
+          return (
+            <View key={list.title} style={styles.list}>
+              <Text style={styles.title}>{list.title}</Text>
+              <Text style={styles.details}>{list.details}</Text>
+            </View>
+          );
+        }
       })}
     </View>
   );
@@ -27,6 +33,7 @@ const styles = StyleSheet.create({
   list: {
     flexDirection: "row",
     justifyContent: "space-between",
+    flexWrap: "wrap",
   },
   title: {
     fontSize: 16,

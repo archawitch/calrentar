@@ -1,13 +1,17 @@
 import { ScrollView, View, Text, StyleSheet } from "react-native";
 
 import { RentConfirmationScreenProps } from "@appTypes/navigation/navigationTypes";
-import { ListDetailsType } from "@appTypes/screens/screenTypes";
 import Header from "@components/headers/Header";
 import SubHeader from "@components/headers/SubHeader";
-import ToggleButton from "@components/buttons/ToggleButton";
 import ButtonLarge from "@components/buttons/ButtonLarge";
 import ImageContain from "@components/images/ImageContain";
 import ListDetails from "@components/lists/ListDetails";
+
+import { getCarDetail } from "@services/carDetailServices";
+import { getCarImage } from "@services/homeServices";
+import { useCallback, useEffect, useState } from "react";
+import { CarDetail } from "@appTypes/cars/carTypes";
+import Alert from "@components/alert/Alert";
 
 const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
   navigation,
@@ -15,9 +19,33 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
 }) => {
   const { carData, rentForm } = route.params;
 
+  const [carDetail, setCarDetail] = useState<CarDetail>({
+    id: 0,
+    horse_power: 0,
+    seats: 0,
+    transmission: "",
+    year_produced: 0,
+  });
+  const [isConfirm, setIsConfirm] = useState<boolean>(false);
+
+  const fetchCarDetail = useCallback(async (id: number) => {
+    let detail = await getCarDetail(id);
+    if (detail) {
+      setCarDetail(detail);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchCarDetail(carData.id);
+  }, []);
+
   // TODO: handle rent confirmation here ...
   const handleConfirmRent = () => {
     // TODO: add rent information to database
+
+    // Open alert screen
+    setIsConfirm(true);
+
     // navigate to history screen
     // navigation.navigate("RentForm", {
     //   carData: carData,
@@ -25,15 +53,25 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
     // });
   };
 
-  // TODO: retrieve car image by id here ...
-  const getCarImage = (id: number) => {
-    // TODO:  Get car image (side)
+  // After showing alert screen, navigate to history screen
+  useEffect(() => {
+    if (isConfirm) {
+      setTimeout(() => {
+        navigation.reset({
+          index: 0,
+          // TODO: Change to history screen
+          routes: [
+            {
+              name: "Main",
+              params: { screen: "HomeTab", params: { screen: "Home" } },
+            },
+          ],
+        });
+      }, 3000);
+    }
+  }, [isConfirm]);
 
-    // Mock up
-    return require("@assets/images/illustrations/signup-illustration.png");
-  };
-
-  return (
+  return !isConfirm ? (
     <ScrollView style={styles.scrollView}>
       <View style={styles.container}>
         <Header title="Confirm rent" goBack={() => navigation.goBack()} />
@@ -43,7 +81,7 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
           data={[
             { title: "Brand", details: carData.make },
             { title: "Model", details: carData.model },
-            { title: "Year", details: String(carData.year_produced) },
+            { title: "Year", details: String(carDetail.year_produced) },
             { title: "Color", details: carData.color },
           ]}
         />
@@ -59,7 +97,12 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
               details: rentForm.returnDate.toLocaleDateString("en-US"),
             },
             { title: "Type", details: rentForm.pickupType },
-            { title: "Location", details: rentForm.pickupLocation },
+            {
+              title: "Location",
+              details: `${rentForm.pickupLocation} ${
+                rentForm.pickupType === "Self-pickup" ? "center" : ""
+              }`,
+            },
           ]}
         />
         <SubHeader title="Your information" />
@@ -115,6 +158,13 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
         <ButtonLarge title="Confirm" onPress={handleConfirmRent} />
       </View>
     </ScrollView>
+  ) : (
+    <Alert
+      type="notify"
+      isSuccess={isConfirm}
+      title="Rent successfully"
+      details="Enjoy your ride!"
+    />
   );
 };
 
