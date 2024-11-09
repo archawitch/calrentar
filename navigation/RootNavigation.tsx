@@ -17,7 +17,7 @@ import SignupScreen from "@screens/auth/SignupScreen";
 import HomeScreen from "@screens/main/home/HomeScreen";
 import CarDetailsScreen from "@screens/main/home/CarDetailsScreen";
 import RentFormScreen from "@screens/main/home/RentFormScreen";
-// import RentInformationScreen from "../screens/Main/Home/RentInformationScreen";
+import RentConfirmationScreen from "@screens/main/home/RentConfirmationScreen";
 // import RentConfirmationScreen from "../screens/Main/Home/RentConfirmationScreen";
 // import HistoryScreen from "../screens/Main/History/HistoryScreen";
 // import RentHistoryDetails from "../screens/Main/History/RentHistoryDetails";
@@ -69,7 +69,7 @@ function HomeNavigator() {
       />
       <HomeStack.Screen
         name="RentConfirmation"
-        component={LoginScreen}
+        component={RentConfirmationScreen}
         options={{ headerShown: false }}
       />
     </HomeStack.Navigator>

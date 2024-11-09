@@ -3,6 +3,8 @@ import {
   StyleSheet,
   GestureResponderEvent,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
 } from "react-native";
 
 type ButtonSmallProp = {
@@ -12,6 +14,16 @@ type ButtonSmallProp = {
 };
 
 const ButtonSmall = (props: ButtonSmallProp) => {
+  if (props.disabled) {
+    return (
+      <TouchableWithoutFeedback>
+        <View style={[styles.button, { backgroundColor: "#CCCCCC" }]}>
+          <Text style={styles.title}>{props.title}</Text>
+        </View>
+      </TouchableWithoutFeedback>
+    );
+  }
+
   return (
     <TouchableOpacity
       style={[

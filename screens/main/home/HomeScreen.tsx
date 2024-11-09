@@ -13,6 +13,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 
 import { HomeScreenProps } from "@appTypes/navigation/navigationTypes";
 import { CarData } from "@appTypes/cars/carTypes";
+import { CarFilterType } from "@appTypes/screens/screenTypes";
 
 import Input from "@components/inputs/Input";
 import SubHeader from "@components/headers/SubHeader";
@@ -22,19 +23,6 @@ import ButtonSmall from "@components/buttons/ButtonSmall";
 import CardCarRent from "@components/cars/CardCarRent";
 
 // import { getCars } from "@services/homeServices"
-
-interface CarFilterType {
-  searchInput: string;
-  pickupDate: Date;
-  priceRange: {
-    minPice: number | undefined;
-    maxPrice: number | undefined;
-  };
-  location: string[];
-  makes: string[];
-  models: string[];
-  colors: string[];
-}
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   // NOTE: Mock up cars (Don't forget to remove)
@@ -248,10 +236,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               inputMode="numeric"
               iconName="attach-money"
               onChangeText={(newInput: string) => {
+                if (newInput.trim() === "") newInput = "0";
                 setFilter((prev) => ({
                   ...prev,
                   priceRange: {
-                    minPice: Number(newInput),
+                    minPice: parseInt(newInput),
                     maxPrice: prev.priceRange.minPice,
                   },
                 }));
@@ -262,11 +251,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               inputMode="numeric"
               iconName="attach-money"
               onChangeText={(newInput: string) => {
+                if (newInput.trim() === "") newInput = "0";
                 setFilter((prev) => ({
                   ...prev,
                   priceRange: {
                     minPice: prev.priceRange.minPice,
-                    maxPrice: Number(newInput),
+                    maxPrice: parseInt(newInput),
                   },
                 }));
               }}

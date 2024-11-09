@@ -60,7 +60,7 @@ const SignupScreen: React.FC<{ navigation: SignupScreenNavigationProp }> = ({
 
   return !isAuthenticated ? (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
+      <KeyboardAvoidingView behavior="position" style={styles.container}>
         <View style={styles.imageContainer}>
           <Image
             style={styles.image}
@@ -100,7 +100,7 @@ const SignupScreen: React.FC<{ navigation: SignupScreenNavigationProp }> = ({
             </Text>
           </Text>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   ) : (
     <Alert

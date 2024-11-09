@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, StyleSheet, Image } from "react-native";
+import { ScrollView, View, StyleSheet } from "react-native";
 
 import { CarDetailsScreenProps } from "@appTypes/navigation/navigationTypes";
 import Header from "@components/headers/Header";
@@ -46,7 +46,12 @@ const CarDetailsScreen: React.FC<CarDetailsScreenProps> = ({
         <View style={[styles.buttonsContainer, { paddingBottom: 20 }]}>
           {carData.available_location.map((location) => {
             return (
-              <ToggleButton key={location} title={location} isActive={false} />
+              <ToggleButton
+                key={location}
+                title={location}
+                isActive={false}
+                disabled
+              />
             );
           })}
         </View>

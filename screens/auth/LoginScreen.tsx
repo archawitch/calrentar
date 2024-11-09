@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
+  KeyboardAvoidingView,
 } from "react-native";
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -65,7 +66,7 @@ const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
+      <KeyboardAvoidingView behavior="position" style={styles.container}>
         <Image
           style={styles.image}
           source={require("@assets/images/illustrations/login-illustration.png")}></Image>
@@ -96,7 +97,7 @@ const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
             </Text>
           </Text>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </TouchableWithoutFeedback>
   );
 };

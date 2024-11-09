@@ -5,21 +5,16 @@ import {
   Text,
   StyleSheet,
   KeyboardAvoidingView,
-  Platform,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import MapView, {
-  LatLng,
-  MapPressEvent,
-  Marker,
-  Region,
-} from "react-native-maps";
+import MapView, { LatLng, Marker, Region } from "react-native-maps";
 import * as Location from "expo-location";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import { RentFormScreenProps } from "@appTypes/navigation/navigationTypes";
+import { RentFormType } from "@appTypes/screens/screenTypes";
 import Header from "@components/headers/Header";
 import SubHeader from "@components/headers/SubHeader";
 import CardCarModel from "@components/cars/CardCarModel";
@@ -27,15 +22,6 @@ import ToggleButton from "@components/buttons/ToggleButton";
 import ButtonLarge from "@components/buttons/ButtonLarge";
 import Input from "@components/inputs/Input";
 import ButtonSmall from "@components/buttons/ButtonSmall";
-
-interface RentFormType {
-  pickupDate: Date;
-  returnDate: Date;
-  pickupType: "Self-pickup" | "Delivery service";
-  pickupLocation: string;
-  name: string;
-  driverLicense: string;
-}
 
 const RentFormScreen: React.FC<RentFormScreenProps> = ({
   navigation,
@@ -86,6 +72,7 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
     name: "",
     driverLicense: "",
   });
+  const [isFormValid, setIsFormValid] = useState<boolean>(false);
 
   const getUserLocation = async () => {
     const location = await Location.getCurrentPositionAsync({});
@@ -186,29 +173,43 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
     );
   };
 
-  const navigateToRentInfo = () => {
+  const validateForm = () => {
     if (
       form.name.trim() === "" ||
       form.driverLicense.trim() === "" ||
       form.pickupLocation.trim() === ""
     )
-      return;
+      return false;
 
     if (
       form.pickupType === "Self-pickup" &&
       !carData.available_location.includes(form.pickupLocation)
     )
-      return;
+      return false;
 
-    if (pickupDate.getTime() <= Date.now()) {
-      alert("No pick-up date selected!");
-      return;
+    if (form.driverLicense.trim().length !== 16) return false;
+
+    if (pickupDate.getDate() < new Date(Date.now()).getDate()) return false;
+
+    return true;
+  };
+
+  // Validate rent form
+  useEffect(() => {
+    setIsFormValid(false);
+
+    if (validateForm()) {
+      setIsFormValid(true);
     }
-    // navigation.navigate("RentInformation", {
-    //   carData: carData,
-    //   pickupDate: pickupDate
-    // })
-    // alert("passed!");
+  }, [form]);
+
+  const navigateToRentInfo = () => {
+    if (validateForm()) {
+      navigation.navigate("RentConfirmation", {
+        carData: carData,
+        rentForm: form,
+      });
+    }
   };
 
   if (openMap) {
@@ -310,15 +311,6 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
                           }));
                           return;
                         }
-
-                        // else, pressed 'My location'
-                        const userLatlng = await getUserLocation();
-                        setRegion(() => ({
-                          latitude: userLatlng.latitude,
-                          longitude: userLatlng.longitude,
-                          latitudeDelta: 0.0922,
-                          longitudeDelta: 0.0421,
-                        }));
                       }}
                     />
                   );
@@ -412,8 +404,6 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
               })}
             </View>
           )}
-          {/* ----------------TODO--------------- */}
-          {/* TODO: Add map screen to choose a location for delivery service */}
           {form.pickupType === "Delivery service" && (
             <Input
               placeholder="Choose your pick-up location"
@@ -422,7 +412,6 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
               onPress={toggleOpenMap}
             />
           )}
-          {/* ----------------------------------- */}
           <SubHeader title="Your name" />
           <Input
             value={form.name}
@@ -441,15 +430,23 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
             onChangeText={(newNumber) => {
               setForm((prev) => ({
                 ...prev,
-                driverLicense: newNumber,
+                driverLicense: newNumber.trim(),
               }));
             }}
           />
           <View style={styles.totalPriceContainer}>
             <Text style={styles.totalPrice}>Total Price</Text>
-            <Text style={styles.totalPrice}>{calculateTotalPrice()} THB</Text>
+            <Text style={styles.totalPrice}>
+              {carData.rental_price +
+                (form.pickupType === "Delivery service" ? deliveryPrice : 0)}
+              THB
+            </Text>
           </View>
-          <ButtonLarge title={`Rent now`} onPress={navigateToRentInfo} />
+          <ButtonLarge
+            title={`Rent now`}
+            disabled={!isFormValid}
+            onPress={navigateToRentInfo}
+          />
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
