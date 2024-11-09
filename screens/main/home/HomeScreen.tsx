@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -12,7 +12,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 import { HomeScreenProps } from "@appTypes/navigation/navigationTypes";
-import { CarData } from "@appTypes/cars/carTypes";
+import { Car, CarFilterType } from "@appTypes/cars/carTypes";
 
 import Input from "@components/inputs/Input";
 import SubHeader from "@components/headers/SubHeader";
@@ -23,64 +23,19 @@ import CardCarRent from "@components/cars/CardCarRent";
 import CardCarRentHeader from "@components/cars/CardCarRentHeader";
 import ImageContain from "@components/images/ImageContain";
 
-// import { getCars } from "@services/homeServices"
-
-type CarFilterType = {
-  searchInput: string;
-  pickupDate: Date | undefined;
-  priceRange: {
-    minPice: number | undefined;
-    maxPrice: number | undefined;
-  };
-  location: string[];
-  makes: string[];
-  models: string[];
-  colors: string[];
-};
+import {
+  getCars,
+  getLocations,
+  getTopFive,
+  getCarLogo,
+  getCarImage,
+} from "@services/homeServices";
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  // NOTE: Mock up cars (Don't forget to remove)
-  const allCars: CarData[] = [
-    {
-      id: Math.round(Math.random() * 10000),
-      make: "Honda",
-      model: "Civic",
-      color: "White",
-      seats: 5,
-      horse_power: 300,
-      transmission: "Auto",
-      year_produced: 2023,
-      rental_price: 1500,
-      available_location: ["Bangkok", "Chiang Mai"],
-    },
-    {
-      id: Math.round(Math.random() * 10000),
-      make: "Mercedez-Benz",
-      model: "Maybach S580",
-      color: "Black",
-      seats: 5,
-      horse_power: 600,
-      transmission: "Auto",
-      year_produced: 2023,
-      rental_price: 1500,
-      available_location: ["Bangkok", "Phuket"],
-    },
-    {
-      id: Math.round(Math.random() * 10000),
-      make: "Mercedez-Benz",
-      model: "AMG G63",
-      color: "Silver",
-      seats: 7,
-      horse_power: 750,
-      transmission: "Manual",
-      year_produced: 2024,
-      rental_price: 1500,
-      available_location: ["Phuket"],
-    },
-  ];
-  const allLocations = ["Bangkok", "Phuket", "Chiang Mai"];
+  const [allCars, setAllCars] = useState<Car[]>([]);
+  const [allLocations, setAllLocations] = useState<string[]>([]);
 
-  const [searchResults, setSearchResults] = useState<CarData[]>([]);
+  const [searchResults, setSearchResults] = useState<Car[]>([]);
   const [makes, setMakes] = useState<string[]>([]);
   const [models, setModels] = useState<string[]>([]);
   const [colors, setColors] = useState<string[]>([]);
@@ -89,10 +44,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     searchInput: "",
     pickupDate: new Date(Date.now()),
     priceRange: {
-      minPice: 0,
+      minPrice: 0,
       maxPrice: 50000,
     },
-    location: ["Bangkok", "Phuket", "Chiang Mai"],
+    location: [],
     makes: [],
     models: [],
     colors: [],
@@ -108,31 +63,63 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     // TODO: handle searching cars here ...
     // Use data from filter<CarFilterType>
     // const f: CarFilterType = filter
+    const {
+      searchInput,
+      pickupDate,
+      priceRange: { minPrice, maxPrice },
+      location,
+      makes,
+      models,
+      colors,
+    } = filter;
 
-    // Mock up
-    const newSearchResults = [
-      ...searchResults,
-      {
-        id: Math.round(Math.random() * 10000),
-        make: "Honda",
-        model: "Civic",
-        color: "White",
-        seats: 5,
-        horse_power: 300,
-        transmission: "auto",
-        year_produced: 2023,
-        rental_price: 1500,
-        available_location: ["Bangkok", "Chiang Mai"],
-      },
-    ];
+    if (!pickupDate) {
+      alert("No pickup date");
+      return;
+    }
+
+    const formattedDate = pickupDate.toISOString().split("T")[0];
+    const searchPattern = new RegExp(filter.searchInput, "i");
+
+    const availableCars = allCars.filter((car) => {
+      if (car.rent_date[formattedDate]) return false;
+
+      if (
+        searchInput &&
+        !searchPattern.test(car.make) &&
+        !searchPattern.test(car.model)
+      )
+        return false;
+
+      if (
+        minPrice &&
+        maxPrice &&
+        (car.rental_price < minPrice || car.rental_price > maxPrice)
+      )
+        return false;
+
+      if (
+        location.length > 0 &&
+        !location.some((loc) => car.available_location.includes(loc))
+      )
+        return false;
+
+      if (makes.length > 0 && !makes.includes(car.make)) return false;
+
+      if (models.length > 0 && !models.includes(car.model)) return false;
+
+      if (colors.length > 0 && !colors.includes(car.color)) return false;
+
+      return true;
+    });
 
     // Parse search results
-    setSearchResults(newSearchResults);
-    setCurrentPickupDate(filter.pickupDate);
+    setSearchResults(availableCars);
+    setCurrentPickupDate(pickupDate);
   };
 
   // NOTE: Handle to navigate to car information
-  const navigateToCarInfo = (car: CarData, pickupDate: Date) => {
+  const navigateToCarInfo = (car: Car, pickupDate: Date) => {
     navigation.navigate("CarDetails", {
       carData: car,
       pickupDate: pickupDate,
@@ -194,26 +181,51 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     return Array.from(colorsSet);
   };
 
-  // TODO: retrieve logo image by car make here ...
-  const getLogo = (make: string) => {
-    // Mock up
-    return require("@assets/images/illustrations/login-illustration.png");
+  const toggleFilter = (
+    key: "location" | "makes" | "models" | "colors",
+    value: string
+  ) => {
+    setFilter((prev) => {
+      const updatedList = prev[key].includes(value)
+        ? prev[key].filter((v) => v !== value)
+        : [...prev[key], value];
+      return {
+        ...prev,
+        [key]: updatedList,
+      };
+    });
   };
 
-  // TODO: retrieve car image by id here ...
-  const getCarImage = (id: number) => {
-    // TODO:  Get car image (side)
+  const fetchCars = async () => {
+    let cars = await getCars();
+    if (cars) {
+      setAllCars(cars);
+    }
+  };
 
-    // Mock up
-    return require("@assets/images/illustrations/signup-illustration.png");
+  const fetchTopFive = async () => {
+    let topFive = await getTopFive();
+    if (topFive) {
+      setSearchResults(topFive);
+    }
+  };
+
+  const fetchLocation = async () => {
+    let locations = await getLocations();
+    if (locations) {
+      setAllLocations(locations);
+      setFilter((prev) => ({
+        ...prev,
+        location: locations,
+      }));
+    }
   };
 
   // TODO: retrieve popular cars list here ...
   useEffect(() => {
-    // Get popular car list and display when first render
-
-    // Mock up
-    setSearchResults([allCars[1], allCars[2]]);
+    fetchCars();
+    fetchLocation();
+    fetchTopFive();
   }, []);
 
   // NOTE: handle location selection ...
@@ -260,15 +272,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           <SubHeader title="Price range (THB/day)" />
           <View style={{ flexDirection: "row", gap: 10 }}>
             <Input
-              value={String(filter.priceRange.minPice)}
+              value={String(filter.priceRange.minPrice)}
               inputMode="numeric"
               iconName="attach-money"
               onChangeText={(newInput: string) => {
                 setFilter((prev) => ({
                   ...prev,
                   priceRange: {
-                    minPice: Number(newInput),
-                    maxPrice: prev.priceRange.minPice,
+                    minPrice: Number(newInput),
+                    maxPrice: prev.priceRange.minPrice,
                   },
                 }));
               }}
@@ -281,7 +293,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 setFilter((prev) => ({
                   ...prev,
                   priceRange: {
-                    minPice: prev.priceRange.minPice,
+                    minPrice: prev.priceRange.minPrice,
                     maxPrice: Number(newInput),
                   },
                 }));
@@ -294,24 +306,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               flexDirection: "row",
               flexWrap: "wrap",
               gap: 10,
-            }}>
+            }}
+          >
             {allLocations.map((location) => (
               <ToggleButton
                 key={location}
                 title={location}
                 isActive={filter.location.includes(location)}
                 onPress={() => {
-                  if (!filter.location.includes(location)) {
-                    setFilter((prev) => ({
-                      ...prev,
-                      location: [...prev.location, location],
-                    }));
-                  } else {
-                    setFilter((prev) => ({
-                      ...prev,
-                      location: prev.location.filter((loc) => loc !== location),
-                    }));
-                  }
+                  toggleFilter("location", location);
                 }}
               />
             ))}
@@ -323,24 +326,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 flexDirection: "row",
                 flexWrap: "wrap",
                 gap: 10,
-              }}>
+              }}
+            >
               {makes.map((make) => (
                 <ToggleButton
                   key={make}
                   title={make}
                   isActive={filter.makes.includes(make)}
                   onPress={() => {
-                    if (!filter.makes.includes(make)) {
-                      setFilter((prev) => ({
-                        ...prev,
-                        makes: [...prev.makes, make],
-                      }));
-                    } else {
-                      setFilter((prev) => ({
-                        ...prev,
-                        makes: prev.makes.filter((m) => m !== make),
-                      }));
-                    }
+                    toggleFilter("makes", make);
                   }}
                 />
               ))}
@@ -353,24 +347,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 flexDirection: "row",
                 flexWrap: "wrap",
                 gap: 10,
-              }}>
+              }}
+            >
               {models.map((model) => (
                 <ToggleButton
                   key={model}
                   title={model}
                   isActive={filter.models.includes(model)}
                   onPress={() => {
-                    if (!filter.models.includes(model)) {
-                      setFilter((prev) => ({
-                        ...prev,
-                        models: [...prev.models, model],
-                      }));
-                    } else {
-                      setFilter((prev) => ({
-                        ...prev,
-                        models: prev.models.filter((m) => m !== model),
-                      }));
-                    }
+                    toggleFilter("models", model);
                   }}
                 />
               ))}
@@ -383,24 +368,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 flexDirection: "row",
                 flexWrap: "wrap",
                 gap: 10,
-              }}>
+              }}
+            >
               {colors.map((color) => (
                 <ToggleButton
                   key={color}
                   title={color}
                   isActive={filter.colors.includes(color)}
                   onPress={() => {
-                    if (!filter.colors.includes(color)) {
-                      setFilter((prev) => ({
-                        ...prev,
-                        colors: [...prev.colors, color],
-                      }));
-                    } else {
-                      setFilter((prev) => ({
-                        ...prev,
-                        colors: prev.colors.filter((c) => c !== color),
-                      }));
-                    }
+                    toggleFilter("colors", color);
                   }}
                 />
               ))}
@@ -435,14 +411,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             </TouchableOpacity>
           </View>
           <TouchableWithoutFeedback
-            onPress={() => setShowDatePicker(!showDatePicker)}>
+            onPress={() => setShowDatePicker(!showDatePicker)}
+          >
             <View style={styles.input}>
               <MaterialIcons name="calendar-month" size={18} color="#656F77" />
               <Text
                 style={[
                   styles.inputText,
                   { color: filter.pickupDate ? "black" : "#bbbbbb" },
-                ]}>
+                ]}
+              >
                 {filter.pickupDate
                   ? filter.pickupDate.toLocaleDateString("en-US")
                   : "Pick-up date"}
@@ -475,7 +453,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               key={carData.id}
               header={
                 <CardCarRentHeader
-                  logo={getLogo(carData.make)}
+                  logo={getCarLogo(carData.make)}
                   model={carData.model}
                 />
               }
