@@ -12,7 +12,8 @@
       "@services/*": ["services/*"],
       "@state/*": ["state/*"],
       "@styles/*": ["styles/*"],
-      "@appTypes/*": ["types/*"]
+      "@appTypes/*": ["types/*"],
+      "@firebase/auth": ["./node_modules/@firebase/auth/dist/index.rn.d.ts"]
     }
   }
 }

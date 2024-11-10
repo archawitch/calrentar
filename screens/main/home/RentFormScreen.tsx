@@ -62,8 +62,7 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
   const [markerData, setMarkerData] = useState<LatLng>();
   const [locationName, setLocationName] = useState<string>("");
   const [currentLatlng, setCurrentLatlng] = useState<LatLng>();
-  const [currentToggleLocation, setCurrentToggleLocation] =
-    useState<string>("Current");
+  const [currentToggleLocation, setCurrentToggleLocation] = useState<string>("Current");
   const [form, setForm] = useState<RentFormType>({
     pickupDate: pickupDate,
     returnDate: returnDate,
@@ -148,7 +147,7 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
 
   // Check if selected location is in available range, if yes, set selected location
   const handleSetLocation = (latlng: LatLng) => {
-    console.log(latlng);
+    // console.log(latlng);
 
     // Set marker abd region data
     setMarkerData(latlng);
@@ -320,7 +319,7 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
             style={styles.map}
             region={region}
             onRegionChange={(e) => {
-              console.log(e);
+              // console.log(e);
 
               handleSetLocation({
                 latitude: e.latitude,
