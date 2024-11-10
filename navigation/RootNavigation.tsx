@@ -1,8 +1,10 @@
 // Navigation.tsx
 import React from "react";
+import { Text } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import {
   RootStackParamList,
@@ -18,9 +20,8 @@ import HomeScreen from "@screens/main/home/HomeScreen";
 import CarDetailsScreen from "@screens/main/home/CarDetailsScreen";
 import RentFormScreen from "@screens/main/home/RentFormScreen";
 import RentConfirmationScreen from "@screens/main/home/RentConfirmationScreen";
-// import RentConfirmationScreen from "../screens/Main/Home/RentConfirmationScreen";
-// import HistoryScreen from "../screens/Main/History/HistoryScreen";
-// import RentHistoryDetails from "../screens/Main/History/RentHistoryDetails";
+import HistoryScreen from "@screens/main/history/HistoryScreen";
+import HistoryDetailsScreen from "@screens/main/history/HistoryDetailsScreen";
 // import SavedCarsScreen from "../screens/Main/SavedCarsScreen";
 // import ProfileScreen from "../screens/Main/ProfileScreen";
 
@@ -82,12 +83,12 @@ function HistoryNavigator() {
     <HistoryStack.Navigator initialRouteName="History">
       <HistoryStack.Screen
         name="History"
-        component={LoginScreen}
+        component={HistoryScreen}
         options={{ headerShown: false }}
       />
       <HistoryStack.Screen
-        name="RentHistoryDetails"
-        component={LoginScreen}
+        name="HistoryDetails"
+        component={HistoryDetailsScreen}
         options={{ headerShown: false }}
       />
     </HistoryStack.Navigator>
@@ -97,11 +98,55 @@ function HistoryNavigator() {
 // Main Tab Navigator
 function MainNavigator() {
   return (
-    <MainTab.Navigator>
+    <MainTab.Navigator
+      initialRouteName="HomeTab"
+      screenOptions={({ route }) => ({
+        tabBarLabel: ({ color, focused }) => {
+          let tabName: string = "";
+          if (route.name === "HomeTab") {
+            tabName = "Home";
+          } else if (route.name === "HistoryTab") {
+            tabName = "History";
+          } else if (route.name === "SavedTab") {
+            tabName = "Saved";
+          } else if (route.name === "ProfileTab") {
+            tabName = "Profile";
+          }
+
+          return <Text style={{ color: color }}>{tabName}</Text>;
+        },
+        tabBarIcon: ({ size, color }) => {
+          let iconName: any;
+          if (route.name === "HomeTab") {
+            iconName = "home";
+          } else if (route.name === "HistoryTab") {
+            iconName = "history";
+          } else if (route.name === "SavedTab") {
+            iconName = "bookmark";
+          } else if (route.name === "ProfileTab") {
+            iconName = "account-circle";
+          }
+
+          return <MaterialIcons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: "#2B2930",
+        tabBarInactiveTintColor: "#A1A1A6",
+        tabBarStyle: {
+          paddingTop: 5,
+          borderTopLeftRadius: 15,
+          borderTopRightRadius: 15,
+          backgroundColor: "white",
+          position: "absolute",
+          height: 55,
+        },
+        tabBarLabelStyle: { paddingBottom: 2 },
+      })}>
       <MainTab.Screen
         name="HomeTab"
         component={HomeNavigator}
-        options={{ headerShown: false }}
+        options={{
+          headerShown: false,
+        }}
       />
       <MainTab.Screen
         name="HistoryTab"

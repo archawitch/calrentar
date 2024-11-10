@@ -30,7 +30,7 @@ const CarDetailsScreen: React.FC<CarDetailsScreenProps> = ({
     horse_power: 0,
     seats: 0,
     transmission: "",
-    year_produced: 0
+    year_produced: 0,
   });
 
   const fetchCarDetail = useCallback(async (id: number) => {
@@ -42,8 +42,8 @@ const CarDetailsScreen: React.FC<CarDetailsScreenProps> = ({
           horse_power: detail.horse_power,
           seats: detail.seats,
           transmission: detail.transmission,
-          year_produced: detail.year_produced
-        }
+          year_produced: detail.year_produced,
+        };
       });
     }
   }, []);
@@ -65,7 +65,10 @@ const CarDetailsScreen: React.FC<CarDetailsScreenProps> = ({
         <Header title="Car details" goBack={() => navigation.goBack()} />
         <CardCarModel carData={carData} />
         <View style={styles.propertiesContainer}>
-          <CarProperty iconName="event-seat" title={`${carDetail.seats} seats`} />
+          <CarProperty
+            iconName="event-seat"
+            title={`${carDetail.seats} seats`}
+          />
           <CarProperty
             iconName="battery-charging-full"
             title={`${carDetail.horse_power} hp`}
@@ -110,8 +113,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingTop: 16,
-    paddingBottom: 40,
-    paddingHorizontal: 28,
+    paddingBottom: 88,
+    paddingHorizontal: 20,
     backgroundColor: "white",
     gap: 16,
   },

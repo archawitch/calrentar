@@ -31,6 +31,10 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
 
   const RADIUS: number = 50; // 50 KM
   const deliveryPrice: number = 300; // 300 THB
+  const defaultDeltas = {
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  };
   const availableLocation = [
     {
       name: "Bangkok",
@@ -62,7 +66,8 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
   const [markerData, setMarkerData] = useState<LatLng>();
   const [locationName, setLocationName] = useState<string>("");
   const [currentLatlng, setCurrentLatlng] = useState<LatLng>();
-  const [currentToggleLocation, setCurrentToggleLocation] = useState<string>("Current");
+  const [currentToggleLocation, setCurrentToggleLocation] =
+    useState<string>("Current");
   const [form, setForm] = useState<RentFormType>({
     pickupDate: pickupDate,
     returnDate: returnDate,
@@ -94,8 +99,7 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
       setRegion({
         latitude: location.latitude,
         longitude: location.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
+        ...defaultDeltas,
       });
       setMarkerData({
         latitude: location.latitude,
@@ -147,8 +151,6 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
 
   // Check if selected location is in available range, if yes, set selected location
   const handleSetLocation = (latlng: LatLng) => {
-    // console.log(latlng);
-
     // Set marker abd region data
     setMarkerData(latlng);
 
@@ -204,16 +206,9 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.mapScreenContainer}>
           <View>
-            <View
-              style={{
-                backgroundColor: "white",
-                flexDirection: "row",
-                alignItems: "stretch",
-                padding: 12,
-                gap: 10,
-              }}>
+            <View style={styles.mapForm}>
               <TouchableOpacity onPress={() => setOpenMap(false)}>
-                <View style={{ flex: 1, justifyContent: "center" }}>
+                <View style={styles.mapFormBackBtn}>
                   <MaterialIcons
                     name="chevron-left"
                     size={32}
@@ -242,10 +237,9 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
                     setRegion((prev) => {
                       if (prev) {
                         return {
+                          ...prev,
                           latitude: currentLatlng.latitude,
                           longitude: currentLatlng.longitude,
-                          latitudeDelta: prev.latitudeDelta,
-                          longitudeDelta: prev.longitudeDelta,
                         };
                       }
                     });
@@ -257,16 +251,8 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
-              style={{ backgroundColor: "white" }}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  flexWrap: "wrap",
-                  backgroundColor: "white",
-                  paddingHorizontal: 12,
-                  gap: 6,
-                  paddingBottom: 12,
-                }}>
+              style={styles.scrollView}>
+              <View style={styles.mapLocationBtnContainer}>
                 <ToggleButton
                   key="Current"
                   title="Current"
@@ -275,13 +261,11 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
                     setCurrentToggleLocation("Current");
 
                     const userLatlng = await getUserLocation();
-
                     handleSetLocation(userLatlng);
                     setRegion(() => ({
                       latitude: userLatlng.latitude,
                       longitude: userLatlng.longitude,
-                      latitudeDelta: 0.0922,
-                      longitudeDelta: 0.0421,
+                      ...defaultDeltas,
                     }));
                   }}
                 />
@@ -303,8 +287,7 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
                           setRegion(() => ({
                             latitude: locData.latlng.latitude,
                             longitude: locData.latlng.longitude,
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421,
+                            ...defaultDeltas,
                           }));
                           return;
                         }
@@ -316,11 +299,9 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
             </ScrollView>
           </View>
           <MapView
-            style={styles.map}
+            style={styles.mapView}
             region={region}
             onRegionChange={(e) => {
-              // console.log(e);
-
               handleSetLocation({
                 latitude: e.latitude,
                 longitude: e.longitude,
@@ -335,13 +316,13 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
   }
 
   return (
-    <KeyboardAvoidingView behavior="position" style={{ flex: 1 }}>
+    <KeyboardAvoidingView behavior="position" style={styles.keyboardView}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
           <Header title="Rent information" goBack={() => navigation.goBack()} />
           <CardCarModel carData={carData} />
           <SubHeader title="Color" />
-          <View style={styles.buttonsContainer}>
+          <View style={styles.btnContainer}>
             <ToggleButton title={carData.color} isActive />
           </View>
           <SubHeader title="Pick-up date" />
@@ -357,7 +338,7 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
             value={returnDate.toLocaleDateString("en-US")}
           />
           <SubHeader title="Pick-up type" />
-          <View style={styles.buttonsContainer}>
+          <View style={styles.btnContainer}>
             <ToggleButton
               title="Self-pickup"
               isActive={form.pickupType === "Self-pickup"}
@@ -387,7 +368,7 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
           </View>
           <SubHeader title="Location" />
           {form.pickupType === "Self-pickup" && (
-            <View style={styles.buttonsContainer}>
+            <View style={styles.btnContainer}>
               {carData.available_location.map((location) => {
                 return (
                   <ToggleButton
@@ -458,6 +439,9 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
 };
 
 const styles = StyleSheet.create({
+  keyboardView: {
+    flex: 1,
+  },
   scrollView: {
     backgroundColor: "white",
   },
@@ -465,12 +449,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingTop: 16,
-    paddingBottom: 40,
-    paddingHorizontal: 28,
+    paddingBottom: 88,
+    paddingHorizontal: 20,
     backgroundColor: "white",
     gap: 16,
   },
-  buttonsContainer: {
+  btnContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 10,
@@ -487,8 +471,27 @@ const styles = StyleSheet.create({
   mapScreenContainer: {
     flex: 1,
   },
-  map: {
+  mapView: {
     flex: 1,
+  },
+  mapForm: {
+    backgroundColor: "white",
+    flexDirection: "row",
+    alignItems: "stretch",
+    padding: 12,
+    gap: 10,
+  },
+  mapFormBackBtn: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  mapLocationBtnContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    backgroundColor: "white",
+    paddingHorizontal: 12,
+    gap: 6,
+    paddingBottom: 12,
   },
 });
 
