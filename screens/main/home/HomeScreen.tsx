@@ -80,11 +80,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       )
         return false;
 
-      if (
-        minPrice &&
-        maxPrice &&
-        (car.rental_price < minPrice || car.rental_price > maxPrice)
-      )
+      if (car.rental_price < minPrice || car.rental_price > maxPrice)
         return false;
 
       if (
@@ -275,7 +271,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   ...prev,
                   priceRange: {
                     minPrice: parseInt(newInput),
-                    maxPrice: prev.priceRange.minPrice,
+                    maxPrice: prev.priceRange.maxPrice,
                   },
                 }));
               }}
