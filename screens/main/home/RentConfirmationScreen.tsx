@@ -12,7 +12,7 @@ import { getCarImage } from "@services/homeServices";
 import { useCallback, useEffect, useState } from "react";
 import { CarDetail } from "@appTypes/cars/carTypes";
 import Alert from "@components/alert/Alert";
-import { storeRentInfo } from "@services/rentServices";
+// import { storeRentInfo } from "@services/rentServices";
 
 const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
   navigation,
@@ -24,16 +24,11 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
   // TODO: handle rent confirmation here ...
   const handleConfirmRent = () => {
     // TODO: add rent information to database
+    // might save as History type
     // const { isSuccess, msg } = storeRentInfo(carData.id, rentForm);
 
     // Open alert screen
     setIsConfirm(true);
-
-    // navigate to history screen
-    // navigation.navigate("RentForm", {
-    //   carData: carData,
-    //   pickupDate: pickupDate,
-    // });
   };
 
   // After showing alert screen, navigate to history screen
@@ -46,7 +41,7 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
           routes: [
             {
               name: "Main",
-              params: { screen: "HomeTab", params: { screen: "Home" } },
+              params: { screen: "HistoryTab", params: { screen: "History" } },
             },
           ],
         });
@@ -82,9 +77,7 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
             { title: "Type", details: rentForm.pickupType },
             {
               title: "Location",
-              details: `${rentForm.pickupLocation} ${
-                rentForm.pickupType === "Self-pickup" ? "center" : ""
-              }`,
+              details: rentForm.pickupLocation,
             },
           ]}
         />
@@ -119,12 +112,7 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
             },
           ]}
         />
-        <View
-          style={{
-            borderBottomColor: "#CCCCCC",
-            borderBottomWidth: StyleSheet.hairlineWidth,
-          }}
-        />
+        <View style={styles.hr} />
         <View style={{ paddingBottom: 18 }}>
           <ListDetails
             data={[
@@ -159,20 +147,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingTop: 16,
-    paddingBottom: 40,
-    paddingHorizontal: 28,
+    paddingBottom: 88,
+    paddingHorizontal: 20,
     backgroundColor: "white",
     gap: 16,
   },
-  propertiesContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    flexWrap: "wrap",
-  },
-  buttonsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
+  hr: {
+    borderBottomColor: "#CCCCCC",
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
 });
 

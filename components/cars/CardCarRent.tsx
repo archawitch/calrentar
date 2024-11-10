@@ -19,7 +19,7 @@ import { getCarLogo, getCarImage } from "@services/homeServices";
 
 type CardCarRentProp = {
   carData: Car;
-  onPress?: ((event: GestureResponderEvent) => void) | undefined;
+  onPress: ((event: GestureResponderEvent) => void) | undefined;
 };
 
 const CardCarRent = (props: CardCarRentProp) => {
@@ -46,31 +46,26 @@ const CardCarRent = (props: CardCarRentProp) => {
   }, []);
 
   return (
-    <View style={styles.card}>
-      <TouchableWithoutFeedback onPress={props.onPress}>
-        <View>
-          <View style={styles.header}>
-            <Image
-              style={styles.logo}
-              source={getCarLogo(props.carData.make)}
+    <TouchableWithoutFeedback onPress={props.onPress}>
+      <View style={styles.card}>
+        <View style={styles.header}>
+          <Image style={styles.logo} source={getCarLogo(props.carData.make)} />
+          <Text style={styles.model}>{props.carData.model}</Text>
+          <TouchableOpacity onPress={handleFavorite}>
+            <MaterialIcons
+              name="favorite"
+              size={32}
+              color={isFavorite ? "#FF5A5A" : "#EAEAEB"}
             />
-            <Text style={styles.model}>{props.carData.model}</Text>
-            <TouchableOpacity onPress={handleFavorite}>
-              <MaterialIcons
-                name="favorite"
-                size={32}
-                color={isFavorite ? "#FF5A5A" : "#EAEAEB"}
-              />
-            </TouchableOpacity>
-          </View>
-          <ImageContain source={getCarImage(props.carData.id)} />
-          <ButtonSmall
-            title={`Rent now at ${props.carData.rental_price} THB/day`}
-            onPress={props.onPress}
-          />
+          </TouchableOpacity>
         </View>
-      </TouchableWithoutFeedback>
-    </View>
+        <ImageContain source={getCarImage(props.carData.id)} />
+        <ButtonSmall
+          title={`Rent now at ${props.carData.rental_price} THB/day`}
+          onPress={props.onPress}
+        />
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 

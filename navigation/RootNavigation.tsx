@@ -21,8 +21,7 @@ import CarDetailsScreen from "@screens/main/home/CarDetailsScreen";
 import RentFormScreen from "@screens/main/home/RentFormScreen";
 import RentConfirmationScreen from "@screens/main/home/RentConfirmationScreen";
 import HistoryScreen from "@screens/main/history/HistoryScreen";
-// import HistoryScreen from "../screens/Main/History/HistoryScreen";
-// import RentHistoryDetails from "../screens/Main/History/RentHistoryDetails";
+import HistoryDetailsScreen from "@screens/main/history/HistoryDetailsScreen";
 // import SavedCarsScreen from "../screens/Main/SavedCarsScreen";
 // import ProfileScreen from "../screens/Main/ProfileScreen";
 
@@ -88,8 +87,8 @@ function HistoryNavigator() {
         options={{ headerShown: false }}
       />
       <HistoryStack.Screen
-        name="RentHistoryDetails"
-        component={LoginScreen}
+        name="HistoryDetails"
+        component={HistoryDetailsScreen}
         options={{ headerShown: false }}
       />
     </HistoryStack.Navigator>

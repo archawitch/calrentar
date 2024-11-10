@@ -7,6 +7,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 
 import { Car, CarDetail } from "@appTypes/cars/carTypes";
 import { RentFormType } from "@appTypes/screens/screenTypes";
+import { History } from "@appTypes/history/historyTypes";
 
 export type AuthStackParamList = {
   Login: undefined;
@@ -31,7 +32,9 @@ export type HomeStackParamList = {
 
 export type HistoryStackParamList = {
   History: undefined;
-  RentHistoryDetails: undefined;
+  HistoryDetails: {
+    history: History;
+  };
 };
 
 export type MainTabParamList = {
@@ -73,6 +76,21 @@ export interface RentConfirmationScreenProps {
   route: RouteProp<HomeStackParamList, "RentConfirmation">;
   navigation: CompositeNavigationProp<
     StackNavigationProp<HomeStackParamList, "RentConfirmation">,
+    StackNavigationProp<RootStackParamList>
+  >;
+}
+
+export interface HistoryScreenProps {
+  navigation: CompositeNavigationProp<
+    StackNavigationProp<HistoryStackParamList, "History">,
+    StackNavigationProp<RootStackParamList>
+  >;
+}
+
+export interface HistoryDetailsScreenProps {
+  route: RouteProp<HistoryStackParamList, "HistoryDetails">;
+  navigation: CompositeNavigationProp<
+    StackNavigationProp<HistoryStackParamList, "HistoryDetails">,
     StackNavigationProp<RootStackParamList>
   >;
 }

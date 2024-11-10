@@ -1,44 +1,62 @@
 import React, { useMemo } from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 type AlertType = "auth" | "notify";
-type IconType = {
-  auth: { success: any; failure: any };
-  notify: { success: any; failure: any };
+type IconNameType = {
+  auth: {
+    success: any;
+    failure: any;
+    size: number;
+  };
+  notify: {
+    success: any;
+    failure: any;
+    size: number;
+  };
 };
-type SuccessAlertProp = {
+type AlertProp = {
   type: AlertType;
   isSuccess: boolean;
   title: string;
   details: string;
 };
 
-const icons: IconType = {
+const icons: IconNameType = {
   auth: {
-    success: require("@assets/icons/car-success.png"),
-    failure: require("@assets/icons/car-failure.png"),
+    success: "directions-car",
+    failure: "directions-car",
+    size: 120,
   },
   notify: {
-    success: require("@assets/icons/success.png"),
-    failure: require("@assets/icons/failure.png"),
+    success: "verified",
+    failure: "new-releases",
+    size: 84,
   },
 };
 
 const getIcon = (type: AlertType, result: boolean) => {
-  return icons[type][result ? "success" : "failure"] || null;
+  return {
+    iconName: icons[type][result ? "success" : "failure"] || null,
+    iconSize: icons[type].size,
+  };
 };
 
-const Alert: React.FC<SuccessAlertProp> = ({
-  type,
-  isSuccess,
-  title,
-  details,
-}) => {
-  const icon = useMemo(() => getIcon(type, isSuccess), [type, isSuccess]);
+const Alert: React.FC<AlertProp> = ({ type, isSuccess, title, details }) => {
+  const { iconName, iconSize } = useMemo(
+    () => getIcon(type, isSuccess),
+    [type, isSuccess]
+  );
 
   return (
     <View style={styles.container}>
-      {icon && <Image style={styles.icon} source={icon} />}
+      {iconName && (
+        <MaterialIcons
+          name={iconName}
+          color={isSuccess ? "#23E9B4" : "#FF5A5A"}
+          size={iconSize}
+        />
+      )}
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.details}>{details}</Text>
     </View>
@@ -52,14 +70,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "white",
   },
-  icon: {
-    width: 96,
-    height: 85,
-    marginBottom: 24,
-  },
   title: {
     fontFamily: "Poppins_600SemiBold",
     fontSize: 32,
+    marginTop: 12,
     marginBottom: 8,
   },
   details: {

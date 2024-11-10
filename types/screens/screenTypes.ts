@@ -1,7 +1,9 @@
+export type PickupType = "Self-pickup" | "Delivery service";
+
 export interface RentFormType {
   pickupDate: Date;
   returnDate: Date;
-  pickupType: "Self-pickup" | "Delivery service";
+  pickupType: PickupType;
   pickupLocation: string;
   name: string;
   driverLicense: string;

@@ -37,7 +37,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     pickupDate: new Date(Date.now()),
     priceRange: {
       minPrice: 0,
-      maxPrice: 50000,
+      maxPrice: 100000,
     },
     location: [],
     makes: [],
@@ -253,24 +253,24 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     return (
       <ScrollView style={styles.scrollViewWhite}>
         <View style={[styles.container, { paddingBottom: 60 }]}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={styles.filterHeader}>
             <Header title="Filter your car" />
             <TouchableOpacity onPress={() => setShowFilter(false)}>
               <MaterialIcons name="close" size={32} color="black" />
             </TouchableOpacity>
           </View>
           <SubHeader title="Price range (THB/day)" />
-          <View style={{ flexDirection: "row", gap: 10 }}>
+          <View style={styles.priceRange}>
             <Input
               value={String(filter.priceRange.minPrice)}
               inputMode="numeric"
               iconName="attach-money"
               onChangeText={(newInput: string) => {
-                if (newInput.trim() === "") newInput = "0";
+                const newValue = newInput !== "" ? parseInt(newInput) : 0;
                 setFilter((prev) => ({
                   ...prev,
                   priceRange: {
-                    minPrice: parseInt(newInput),
+                    minPrice: newValue,
                     maxPrice: prev.priceRange.maxPrice,
                   },
                 }));
@@ -281,24 +281,19 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
               inputMode="numeric"
               iconName="attach-money"
               onChangeText={(newInput: string) => {
-                if (newInput.trim() === "") newInput = "0";
+                const newValue = newInput !== "" ? parseInt(newInput) : 0;
                 setFilter((prev) => ({
                   ...prev,
                   priceRange: {
                     minPrice: prev.priceRange.minPrice,
-                    maxPrice: parseInt(newInput),
+                    maxPrice: newValue,
                   },
                 }));
               }}
             />
           </View>
           <SubHeader title="Location" />
-          <View
-            style={{
-              flexDirection: "row",
-              flexWrap: "wrap",
-              gap: 10,
-            }}>
+          <View style={styles.buttonsContainer}>
             {allLocations.map((location) => (
               <ToggleButton
                 key={location}
@@ -312,12 +307,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           </View>
           {makes.length > 0 && <SubHeader title="Brands" />}
           {makes.length > 0 && (
-            <View
-              style={{
-                flexDirection: "row",
-                flexWrap: "wrap",
-                gap: 10,
-              }}>
+            <View style={styles.buttonsContainer}>
               {makes.map((make) => (
                 <ToggleButton
                   key={make}
@@ -332,12 +322,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           )}
           {models.length > 0 && <SubHeader title="Models" />}
           {models.length > 0 && (
-            <View
-              style={{
-                flexDirection: "row",
-                flexWrap: "wrap",
-                gap: 10,
-              }}>
+            <View style={styles.buttonsContainer}>
               {models.map((model) => (
                 <ToggleButton
                   key={model}
@@ -352,12 +337,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           )}
           {colors.length > 0 && <SubHeader title="Colors" />}
           {colors.length > 0 && (
-            <View
-              style={{
-                flexDirection: "row",
-                flexWrap: "wrap",
-                gap: 10,
-              }}>
+            <View style={styles.buttonsContainer}>
               {colors.map((color) => (
                 <ToggleButton
                   key={color}
@@ -457,7 +437,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
     paddingTop: 16,
-    paddingBottom: 20,
+    paddingBottom: 76,
     gap: 16,
   },
   inputContainer: {
@@ -483,6 +463,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#EBEBEB",
     borderRadius: 8,
+  },
+  filterHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  priceRange: {
+    flexDirection: "row",
+    gap: 10,
+  },
+  buttonsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 10,
   },
 });
 
