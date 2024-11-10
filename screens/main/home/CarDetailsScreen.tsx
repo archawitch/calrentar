@@ -19,17 +19,32 @@ const CarDetailsScreen: React.FC<CarDetailsScreenProps> = ({
 }) => {
   const { carData, pickupDate } = route.params;
   const [carDetail, setCarDetail] = useState<CarDetail>({
-    id: 0,
+    id: carData.id,
+    make: carData.make,
+    model: carData.model,
+    color: carData.color,
+    rental_price: carData.rental_price,
+    rent_count: carData.rent_count,
+    rent_date: carData.rent_date,
+    available_location: carData.available_location,
     horse_power: 0,
     seats: 0,
     transmission: "",
-    year_produced: 0,
+    year_produced: 0
   });
 
   const fetchCarDetail = useCallback(async (id: number) => {
     let detail = await getCarDetail(id);
     if (detail) {
-      setCarDetail(detail);
+      setCarDetail((prev): CarDetail => {
+        return {
+          ...prev,
+          horse_power: detail.horse_power,
+          seats: detail.seats,
+          transmission: detail.transmission,
+          year_produced: detail.year_produced
+        }
+      });
     }
   }, []);
 
@@ -39,7 +54,7 @@ const CarDetailsScreen: React.FC<CarDetailsScreenProps> = ({
 
   const navigateToRentInfo = () => {
     navigation.navigate("RentForm", {
-      carData: carData,
+      carData: carDetail,
       pickupDate: pickupDate,
     });
   };

@@ -13,6 +13,15 @@ export interface Car {
 
 export interface CarDetail {
   id: number;
+  make: string;
+  model: string;
+  color: string;
+  rental_price: number;
+  rent_count: number;
+  rent_date: {
+    [date: string]: boolean;
+  };
+  available_location: string[];
   horse_power: number;
   seats: number;
   transmission: string;

@@ -12,36 +12,19 @@ import { getCarImage } from "@services/homeServices";
 import { useCallback, useEffect, useState } from "react";
 import { CarDetail } from "@appTypes/cars/carTypes";
 import Alert from "@components/alert/Alert";
+import { storeRentInfo } from "@services/rentServices";
 
 const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
   navigation,
   route,
 }) => {
   const { carData, rentForm } = route.params;
-
-  const [carDetail, setCarDetail] = useState<CarDetail>({
-    id: 0,
-    horse_power: 0,
-    seats: 0,
-    transmission: "",
-    year_produced: 0,
-  });
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
-
-  const fetchCarDetail = useCallback(async (id: number) => {
-    let detail = await getCarDetail(id);
-    if (detail) {
-      setCarDetail(detail);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchCarDetail(carData.id);
-  }, []);
 
   // TODO: handle rent confirmation here ...
   const handleConfirmRent = () => {
     // TODO: add rent information to database
+    // const { isSuccess, msg } = storeRentInfo(carData.id, rentForm);
 
     // Open alert screen
     setIsConfirm(true);
@@ -81,7 +64,7 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
           data={[
             { title: "Brand", details: carData.make },
             { title: "Model", details: carData.model },
-            { title: "Year", details: String(carDetail.year_produced) },
+            { title: "Year", details: String(carData.year_produced) },
             { title: "Color", details: carData.color },
           ]}
         />

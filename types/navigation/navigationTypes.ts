@@ -5,7 +5,7 @@ import {
 } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-import { Car } from "@appTypes/cars/carTypes";
+import { Car, CarDetail } from "@appTypes/cars/carTypes";
 import { RentFormType } from "@appTypes/screens/screenTypes";
 
 export type AuthStackParamList = {
@@ -20,11 +20,11 @@ export type HomeStackParamList = {
     pickupDate: Date;
   };
   RentForm: {
-    carData: Car;
+    carData: CarDetail;
     pickupDate: Date;
   };
   RentConfirmation: {
-    carData: Car;
+    carData: CarDetail;
     rentForm: RentFormType;
   };
 };

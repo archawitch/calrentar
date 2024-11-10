@@ -87,6 +87,7 @@ export const getCarLogo = (make: string) => {
   return carLogo[make];
 };
 
+// side images
 export const getCarImage = (id: number) => {
   const carImage: Record<number, any> = {
     0: require("@assets/images/illustrations/signup-illustration.png"),
