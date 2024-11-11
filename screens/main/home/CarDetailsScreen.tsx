@@ -97,7 +97,11 @@ const CarDetailsScreen: React.FC<CarDetailsScreenProps> = ({
           })}
         </View>
         <ButtonLarge
-          title={`Rent now at ${carData.rental_price} THB/day`}
+          title={`Rent${
+            pickupDate.getDate() === new Date(Date.now()).getDate()
+              ? " now"
+              : ""
+          } at ${carData.rental_price} THB/day`}
           onPress={navigateToRentInfo}
         />
       </View>

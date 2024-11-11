@@ -1,8 +1,10 @@
+import { useState } from "react";
 import {
   View,
   TextInput,
   StyleSheet,
   GestureResponderEvent,
+  TouchableWithoutFeedback,
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
@@ -18,6 +20,28 @@ type InputProp = {
 };
 
 const Input = (props: InputProp) => {
+  const [isPasswordHidden, setIsPasswordHidden] = useState<boolean>(true);
+
+  const getVisibilityBtn = () => {
+    if (!props.secureTextEntry) return;
+
+    let iconName: any;
+    if (isPasswordHidden) {
+      iconName = "visibility-off";
+    } else {
+      iconName = "visibility";
+    }
+
+    return (
+      <TouchableWithoutFeedback
+        onPress={() => setIsPasswordHidden(!isPasswordHidden)}>
+        <View>
+          <MaterialIcons name={iconName} size={18} color="#CCCCCC" />
+        </View>
+      </TouchableWithoutFeedback>
+    );
+  };
+
   return (
     <View style={styles.container}>
       {props.iconName && (
@@ -26,7 +50,7 @@ const Input = (props: InputProp) => {
       <TextInput
         style={styles.input}
         placeholder={props.placeholder}
-        secureTextEntry={props.secureTextEntry}
+        secureTextEntry={props.secureTextEntry && isPasswordHidden}
         inputMode={props.inputMode ? props.inputMode : "text"}
         editable={props.editable}
         selectTextOnFocus={props.editable}
@@ -34,6 +58,7 @@ const Input = (props: InputProp) => {
         onPress={props.onPress}
         onChangeText={props.onChangeText}
       />
+      {getVisibilityBtn()}
     </View>
   );
 };
@@ -47,13 +72,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#EBEBEB",
     borderRadius: 8,
-    padding: 10,
+    paddingHorizontal: 10,
     gap: 4,
   },
   input: {
     fontSize: 16,
     flex: 1,
     paddingLeft: 6,
+    paddingVertical: 10,
   },
 });
 

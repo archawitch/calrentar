@@ -11,33 +11,19 @@ import {
 import { CompositeNavigationProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-import {
-  RootStackParamList,
-  AuthStackParamList,
-} from "@appTypes/navigation/navigationTypes";
+import { LoginScreenNavigationProp } from "@appTypes/navigation/navigationTypes";
 import AuthInput from "@components/inputs/AuthInput";
 import ButtonLarge from "@components/buttons/ButtonLarge";
 
 import { login } from "@services/authServices";
 
-type LoginScreenNavigationProp = CompositeNavigationProp<
-  StackNavigationProp<AuthStackParamList, "Login">,
-  StackNavigationProp<RootStackParamList>
->;
-
-const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
-  navigation,
-}) => {
+const LoginScreen: React.FC<LoginScreenNavigationProp> = ({ navigation }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isPressed, setIsPressed] = useState<boolean>(false);
 
   const handleLogin = async () => {
-    // TODO: handle login logic here ...
     if (!isPressed) {
-      // Disable login button
-      setIsPressed(true);
-
       // Login logic
       const { isSuccess, msg } = await login(email, password);
 
@@ -86,7 +72,14 @@ const LoginScreen: React.FC<{ navigation: LoginScreenNavigationProp }> = ({
             secureTextEntry
           />
         </View>
-        <ButtonLarge title="Log in" onPress={handleLogin} />
+        <ButtonLarge
+          title="Log in"
+          disabled={isPressed}
+          onPress={() => {
+            setIsPressed(true);
+            handleLogin();
+          }}
+        />
         <View style={styles.signUpContainer}>
           <Text style={styles.signUpText}>
             Don't have an account?{" "}
@@ -126,7 +119,7 @@ const styles = StyleSheet.create({
   },
   signUpContainer: {
     alignItems: "center",
-    marginTop: 56,
+    marginTop: 52,
   },
   signUpText: {
     fontFamily: "Poppins_400Regular",

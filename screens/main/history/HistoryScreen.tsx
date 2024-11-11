@@ -1,10 +1,9 @@
-import { ScrollView, View, Text, StyleSheet, Image } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import { ScrollView, View, StyleSheet } from "react-native";
 
 import { HistoryScreenProps } from "@appTypes/navigation/navigationTypes";
-import Header from "@components/headers/Header";
-import { useCallback, useEffect, useState } from "react";
-
 import { History } from "@appTypes/history/historyTypes";
+import Header from "@components/headers/Header";
 import CardHistory from "@components/cars/CardHistory";
 
 const HistoryScreen: React.FC<HistoryScreenProps> = ({ navigation }) => {

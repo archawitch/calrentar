@@ -9,6 +9,13 @@ export interface RentFormType {
   driverLicense: string;
 }
 
+export interface ProfileForm {
+  email: string;
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
 export interface ListDetailsType {
   title: string;
   details: string;

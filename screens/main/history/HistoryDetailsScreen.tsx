@@ -1,17 +1,12 @@
-import { ScrollView, View, Text, StyleSheet } from "react-native";
+import { ScrollView, View, StyleSheet } from "react-native";
 
-import {
-  HistoryDetailsScreenProps,
-  RentConfirmationScreenProps,
-} from "@appTypes/navigation/navigationTypes";
+import { HistoryDetailsScreenProps } from "@appTypes/navigation/navigationTypes";
 import Header from "@components/headers/Header";
 import SubHeader from "@components/headers/SubHeader";
-import ButtonLarge from "@components/buttons/ButtonLarge";
 import ImageContain from "@components/images/ImageContain";
 import ListDetails from "@components/lists/ListDetails";
 
 import { getCarImage } from "@services/homeServices";
-// import { storeRentInfo } from "@services/rentServices";
 
 const HistoryDetailsScreen: React.FC<HistoryDetailsScreenProps> = ({
   navigation,

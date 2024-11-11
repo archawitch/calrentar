@@ -49,6 +49,17 @@ export type RootStackParamList = {
   Main: NavigatorScreenParams<MainTabParamList>;
 };
 
+export interface LoginScreenNavigationProp {
+  navigation: CompositeNavigationProp<
+    StackNavigationProp<AuthStackParamList, "Login">,
+    StackNavigationProp<RootStackParamList>
+  >;
+}
+
+export interface SignupScreenNavigationProp {
+  navigation: StackNavigationProp<AuthStackParamList, "Signup">;
+}
+
 export interface HomeScreenProps {
   navigation: CompositeNavigationProp<
     StackNavigationProp<HomeStackParamList, "Home">,
@@ -93,4 +104,12 @@ export interface HistoryDetailsScreenProps {
     StackNavigationProp<HistoryStackParamList, "HistoryDetails">,
     StackNavigationProp<RootStackParamList>
   >;
+}
+
+export interface SavedScreenProps {
+  navigation: StackNavigationProp<RootStackParamList>;
+}
+
+export interface ProfileScreenProps {
+  navigation: StackNavigationProp<RootStackParamList>;
 }
