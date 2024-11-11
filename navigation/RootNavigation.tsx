@@ -22,8 +22,8 @@ import RentFormScreen from "@screens/main/home/RentFormScreen";
 import RentConfirmationScreen from "@screens/main/home/RentConfirmationScreen";
 import HistoryScreen from "@screens/main/history/HistoryScreen";
 import HistoryDetailsScreen from "@screens/main/history/HistoryDetailsScreen";
-// import SavedCarsScreen from "../screens/Main/SavedCarsScreen";
-// import ProfileScreen from "../screens/Main/ProfileScreen";
+import SavedScreen from "@screens/main/saved/SavedScreen";
+import ProfileScreen from "@screens/main/profile/ProfileScreen";
 
 const AuthStack = createStackNavigator<AuthStackParamList>();
 const HomeStack = createStackNavigator<HomeStackParamList>();
@@ -52,7 +52,7 @@ function AuthNavigator() {
 // Home Stack
 function HomeNavigator() {
   return (
-    <HomeStack.Navigator initialRouteName="Home">
+    <HomeStack.Navigator>
       <HomeStack.Screen
         name="Home"
         component={HomeScreen}
@@ -80,7 +80,7 @@ function HomeNavigator() {
 // History Stack
 function HistoryNavigator() {
   return (
-    <HistoryStack.Navigator initialRouteName="History">
+    <HistoryStack.Navigator>
       <HistoryStack.Screen
         name="History"
         component={HistoryScreen}
@@ -101,7 +101,7 @@ function MainNavigator() {
     <MainTab.Navigator
       initialRouteName="HomeTab"
       screenOptions={({ route }) => ({
-        tabBarLabel: ({ color, focused }) => {
+        tabBarLabel: ({ color }) => {
           let tabName: string = "";
           if (route.name === "HomeTab") {
             tabName = "Home";
@@ -155,12 +155,12 @@ function MainNavigator() {
       />
       <MainTab.Screen
         name="SavedTab"
-        component={LoginScreen}
+        component={SavedScreen}
         options={{ headerShown: false }}
       />
       <MainTab.Screen
         name="ProfileTab"
-        component={LoginScreen}
+        component={ProfileScreen}
         options={{ headerShown: false }}
       />
     </MainTab.Navigator>

@@ -7,25 +7,16 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   KeyboardAvoidingView,
-  Platform,
 } from "react-native";
-import { StackNavigationProp } from "@react-navigation/stack";
 
-import { AuthStackParamList } from "@appTypes/navigation/navigationTypes";
+import { SignupScreenNavigationProp } from "@appTypes/navigation/navigationTypes";
 import AuthInput from "@components/inputs/AuthInput";
 import ButtonLarge from "@components/buttons/ButtonLarge";
 import Alert from "@components/alert/Alert";
 
 import { signup } from "@services/authServices";
 
-type SignupScreenNavigationProp = StackNavigationProp<
-  AuthStackParamList,
-  "Signup"
->;
-
-const SignupScreen: React.FC<{ navigation: SignupScreenNavigationProp }> = ({
-  navigation,
-}) => {
+const SignupScreen: React.FC<SignupScreenNavigationProp> = ({ navigation }) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
@@ -34,9 +25,6 @@ const SignupScreen: React.FC<{ navigation: SignupScreenNavigationProp }> = ({
 
   const handleSignup = async () => {
     if (!isPressed) {
-      // Disable sign up button
-      setIsPressed(true);
-
       // Signup logic
       const { isSuccess, msg } = await signup(email, password, confirmPassword);
 
@@ -78,18 +66,24 @@ const SignupScreen: React.FC<{ navigation: SignupScreenNavigationProp }> = ({
             label="Password"
             inputText={password}
             onChangeText={setPassword}
-            placeholder="must be at least 8 characters"
+            placeholder="Must be at least 8 characters"
             secureTextEntry
           />
           <AuthInput
             label="Confirm Password"
             inputText={confirmPassword}
             onChangeText={setConfirmPassword}
-            placeholder="must be at least 8 characters"
+            placeholder="Must be at least 8 characters"
             secureTextEntry
           />
         </View>
-        <ButtonLarge title="Sign up" onPress={handleSignup} />
+        <ButtonLarge
+          title="Sign up"
+          onPress={() => {
+            setIsPressed(true);
+            handleSignup();
+          }}
+        />
         <View style={styles.loginContainer}>
           <Text style={styles.loginText}>
             Already have an account?{" "}
@@ -140,7 +134,7 @@ const styles = StyleSheet.create({
   },
   loginContainer: {
     alignItems: "center",
-    marginTop: 56,
+    marginTop: 52,
   },
   loginText: {
     fontFamily: "Poppins_400Regular",

@@ -19,6 +19,7 @@ import { getCarLogo, getCarImage } from "@services/homeServices";
 
 type CardCarRentProp = {
   carData: Car;
+  pickupDate: Date;
   onPress: ((event: GestureResponderEvent) => void) | undefined;
 };
 
@@ -61,7 +62,11 @@ const CardCarRent = (props: CardCarRentProp) => {
         </View>
         <ImageContain source={getCarImage(props.carData.id)} />
         <ButtonSmall
-          title={`Rent now at ${props.carData.rental_price} THB/day`}
+          title={`Rent${
+            props.pickupDate.getDate() === new Date(Date.now()).getDate()
+              ? " now"
+              : ""
+          } at ${props.carData.rental_price} THB/day`}
           onPress={props.onPress}
         />
       </View>

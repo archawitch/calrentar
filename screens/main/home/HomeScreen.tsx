@@ -418,6 +418,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             <CardCarRent
               key={carData.id}
               carData={carData}
+              pickupDate={currentPickupDate}
               onPress={() => navigateToCarInfo(carData, currentPickupDate)}
             />
           );
