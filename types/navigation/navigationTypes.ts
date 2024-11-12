@@ -7,7 +7,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 
 import { Car, CarDetail } from "@appTypes/cars/carTypes";
 import { RentFormType } from "@appTypes/screens/screenTypes";
-import { History } from "@appTypes/history/historyTypes";
+import { History, HistoryItem } from "@appTypes/history/historyTypes";
 
 export type AuthStackParamList = {
   Login: undefined;
@@ -33,7 +33,7 @@ export type HomeStackParamList = {
 export type HistoryStackParamList = {
   History: undefined;
   HistoryDetails: {
-    history: History;
+    history: HistoryItem;
   };
 };
 

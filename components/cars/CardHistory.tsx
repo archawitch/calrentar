@@ -8,15 +8,15 @@ import {
 } from "react-native";
 
 import { getCarLogo } from "@services/homeServices";
-import { History } from "@appTypes/history/historyTypes";
+import { HistoryItem } from "@appTypes/history/historyTypes";
 
 type CarHistoryProp = {
-  history: History;
+  history: HistoryItem;
   onPress: ((event: GestureResponderEvent) => void) | undefined;
 };
 
 const CardHistory = (props: CarHistoryProp) => {
-  const { make, model, pickup_date, price_paid } = props.history;
+  const { make, model, pickup_date, price_paid } = props.history
   const getStatus = () => {
     if (pickup_date.getDate() >= new Date(Date.now()).getDate()) {
       return `waiting on ${pickup_date.toLocaleDateString("en-US")}`;

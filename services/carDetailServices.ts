@@ -14,7 +14,6 @@ import {
       const snapshot = await get(dataRef);
       if (snapshot.exists()) {
         const carDetail: CarDetail = snapshot.val();
-        console.log(carDetail);
   
         return carDetail;
       } else {
