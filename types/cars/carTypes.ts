@@ -5,7 +5,7 @@ export interface Car {
   color: string;
   rental_price: number;
   rent_count: number;
-  rent_date: {
+  rent_date: undefined | {
     [date: string]: boolean;
   };
   available_location: string[];
@@ -18,7 +18,7 @@ export interface CarDetail {
   color: string;
   rental_price: number;
   rent_count: number;
-  rent_date: {
+  rent_date: undefined | {
     [date: string]: boolean;
   };
   available_location: string[];
@@ -26,19 +26,6 @@ export interface CarDetail {
   seats: number;
   transmission: string;
   year_produced: number;
-}
-
-export interface CarFilterType {
-  searchInput: string;
-  pickupDate: Date;
-  priceRange: {
-    minPrice: number;
-    maxPrice: number;
-  };
-  location: string[];
-  makes: string[];
-  models: string[];
-  colors: string[];
 }
 
 export type CarMake =

@@ -20,3 +20,16 @@ export interface ListDetailsType {
   title: string;
   details: string;
 }
+
+export interface CarFilterType {
+  searchInput: string;
+  pickupDate: Date;
+  priceRange: {
+    minPrice: number;
+    maxPrice: number;
+  };
+  location: string[];
+  makes: string[];
+  models: string[];
+  colors: string[];
+}

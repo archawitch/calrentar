@@ -7,6 +7,9 @@ import ImageContain from "@components/images/ImageContain";
 import ListDetails from "@components/lists/ListDetails";
 
 import { getCarImage } from "@services/homeServices";
+import { useEffect, useState } from "react";
+import { getHistoryDetail } from "@services/historyServices";
+import { History } from "@appTypes/history/historyTypes";
 
 const HistoryDetailsScreen: React.FC<HistoryDetailsScreenProps> = ({
   navigation,
@@ -14,21 +17,44 @@ const HistoryDetailsScreen: React.FC<HistoryDetailsScreenProps> = ({
 }) => {
   const {
     history: {
+      id,
       car_id,
       make,
       model,
-      year_produced,
-      color,
-      pickup_location,
       pickup_date,
-      pickup_type,
       price_paid,
       return_date,
     },
   } = route.params;
 
+  const [historyDetail, setHistoryDetail] = useState<History>({
+    car_id: car_id,
+    make: make,
+    model: model,
+    year_produced: 0,
+    color: "",
+    price_paid: price_paid,
+    pickup_date: pickup_date,
+    return_date: return_date,
+    pickup_type: "Self-pickup",
+    pickup_location: "",
+    renter_name: "",
+    driver_license_no: ""
+  });
+
+  const fetchHistoryDetail = async () => {
+    let historyDetail = await getHistoryDetail(id);
+    if (historyDetail) {
+      setHistoryDetail(historyDetail);
+    }
+  }
+
+  useEffect(() => {
+    fetchHistoryDetail();
+  }, [])
+
   const getRentalPrice = () => {
-    let pickupPrice = pickup_type === "Delivery service" ? 300 : 0;
+    let pickupPrice = historyDetail.pickup_type === "Delivery service" ? 300 : 0;
     return price_paid - pickupPrice;
   };
 
@@ -36,14 +62,14 @@ const HistoryDetailsScreen: React.FC<HistoryDetailsScreenProps> = ({
     <ScrollView style={styles.scrollView}>
       <View style={styles.container}>
         <Header title="Rent details" goBack={() => navigation.goBack()} />
-        <ImageContain source={getCarImage(car_id)} />
+        <ImageContain source={getCarImage(historyDetail.car_id)} />
         <SubHeader title="Car information" />
         <ListDetails
           data={[
-            { title: "Brand", details: make },
-            { title: "Model", details: model },
-            { title: "Year", details: String(year_produced) },
-            { title: "Color", details: color },
+            { title: "Brand", details: historyDetail.make },
+            { title: "Model", details: historyDetail.model },
+            { title: "Year", details: String(historyDetail.year_produced) },
+            { title: "Color", details: historyDetail.color },
           ]}
         />
         <SubHeader title="Pick-up information" />
@@ -51,19 +77,19 @@ const HistoryDetailsScreen: React.FC<HistoryDetailsScreenProps> = ({
           data={[
             {
               title: "Pick-up Date",
-              details: pickup_date.toLocaleDateString("en-US"),
+              details: historyDetail.pickup_date.toLocaleDateString("en-US"),
             },
             {
               title: "Return Date",
-              details: return_date.toLocaleDateString("en-US"),
+              details: historyDetail.return_date.toLocaleDateString("en-US"),
             },
             {
               title: "Type",
-              details: pickup_type,
+              details: historyDetail.pickup_type,
             },
             {
               title: "Location",
-              details: pickup_location,
+              details: historyDetail.pickup_location,
             },
           ]}
         />
@@ -80,7 +106,7 @@ const HistoryDetailsScreen: React.FC<HistoryDetailsScreenProps> = ({
             },
             {
               title: "Delivery Fee",
-              details: pickup_type === "Delivery service" ? "300 THB" : "",
+              details: historyDetail.pickup_type === "Delivery service" ? "300 THB" : "",
             },
           ]}
         />
@@ -90,7 +116,7 @@ const HistoryDetailsScreen: React.FC<HistoryDetailsScreenProps> = ({
             data={[
               {
                 title: "Price Paid",
-                details: `${price_paid} THB`,
+                details: `${historyDetail.price_paid} THB`,
               },
             ]}
           />

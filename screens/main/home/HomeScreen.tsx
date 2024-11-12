@@ -12,7 +12,8 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
 import { HomeScreenProps } from "@appTypes/navigation/navigationTypes";
-import { Car, CarFilterType } from "@appTypes/cars/carTypes";
+import { Car } from "@appTypes/cars/carTypes";
+import { CarFilterType } from "@appTypes/screens/screenTypes";
 
 import Input from "@components/inputs/Input";
 import SubHeader from "@components/headers/SubHeader";
@@ -71,7 +72,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     const searchPattern = new RegExp(filter.searchInput, "i");
 
     const availableCars = allCars.filter((car) => {
-      if (car.rent_date[formattedDate]) return false;
+      if (car.rent_date && car.rent_date[formattedDate]) return false;
 
       if (
         searchInput &&

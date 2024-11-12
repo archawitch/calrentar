@@ -1,34 +1,54 @@
 import { ScrollView, View, Text, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
 
 import { RentConfirmationScreenProps } from "@appTypes/navigation/navigationTypes";
+import { History } from "@appTypes/history/historyTypes";
+
 import Header from "@components/headers/Header";
 import SubHeader from "@components/headers/SubHeader";
 import ButtonLarge from "@components/buttons/ButtonLarge";
 import ImageContain from "@components/images/ImageContain";
 import ListDetails from "@components/lists/ListDetails";
-
-import { getCarDetail } from "@services/carDetailServices";
-import { getCarImage } from "@services/homeServices";
-import { useCallback, useEffect, useState } from "react";
-import { CarDetail } from "@appTypes/cars/carTypes";
 import Alert from "@components/alert/Alert";
-// import { storeRentInfo } from "@services/rentServices";
+
+import { getCarImage } from "@services/homeServices";
+import { rentCar } from "@services/rentServices";
 
 const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
   navigation,
   route,
 }) => {
   const { carData, rentForm } = route.params;
+  const pricePaid = carData.rental_price + (rentForm.pickupType === "Delivery service" ? 300 : 0);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
 
   // TODO: handle rent confirmation here ...
-  const handleConfirmRent = () => {
+  const handleConfirmRent = async () => {
     // TODO: add rent information to database
     // might save as History type
-    // const { isSuccess, msg } = storeRentInfo(carData.id, rentForm);
+    const rentInfo: History = {
+      car_id: carData.id,
+      make: carData.make,
+      model: carData.model,
+      year_produced: carData.year_produced,
+      color: carData.color,
+      price_paid: pricePaid,
+      pickup_date: rentForm.pickupDate,
+      return_date: rentForm.returnDate,
+      pickup_type: rentForm.pickupType,
+      pickup_location: rentForm.pickupLocation,
+      renter_name: rentForm.name,
+      driver_license_no: rentForm.driverLicense
+    }
+    const { isSuccess, msg } = await rentCar(rentInfo);
+
+    if (!isSuccess) {
+      alert(msg);
+      return;
+    }  
 
     // Open alert screen
-    setIsConfirm(true);
+    setIsConfirm(isSuccess);
   };
 
   // After showing alert screen, navigate to history screen
@@ -119,8 +139,7 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
               {
                 title: "Total Payment",
                 details: `${
-                  carData.rental_price +
-                  (rentForm.pickupType === "Delivery service" ? 300 : 0)
+                  pricePaid
                 } THB`,
               },
             ]}
