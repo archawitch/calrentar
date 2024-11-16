@@ -16,6 +16,7 @@ import ButtonSmall from "@components/buttons/ButtonSmall";
 import { Car } from "@appTypes/cars/carTypes";
 
 import { getCarLogo, getCarImage } from "@services/homeServices";
+import { getSaveStatus, updateSaveStatus } from "@services/saveServices";
 
 type CardCarRentProp = {
   carData: Car;
@@ -27,13 +28,10 @@ const CardCarRent = (props: CardCarRentProp) => {
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
   // TODO: logic when clicking favorite button
-  const handleFavorite = () => {
-    // const carId = props.id
-
-    // const error = updateFavorite(carId)
-    const error = false;
-    if (error) {
-      console.warn(error);
+  const handleFavorite = async () => {
+    const {isSuccess, msg} = await updateSaveStatus(props.carData.id);
+    if (!isSuccess) {
+      alert(msg);
       return;
     }
 
@@ -43,7 +41,16 @@ const CardCarRent = (props: CardCarRentProp) => {
 
   // Check if the card is marked as favorite or not when first render
   useEffect(() => {
-    handleFavorite();
+    const unsubscribe = getSaveStatus(props.carData.id, (status) => {
+      setIsFavorite(status); // Update state with the data from Firebase
+    });
+
+    // Cleanup: Unsubscribe from the listener when the component unmounts
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, []);
 
   return (
