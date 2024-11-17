@@ -6,22 +6,23 @@ import { Car } from "@appTypes/cars/carTypes";
 import Header from "@components/headers/Header";
 import CardCarRent from "@components/cars/CardCarRent";
 
-import { getTopFive } from "@services/homeServices";
+import { getSavedCars } from "@services/saveServices";
 
 const SavedScreen: React.FC<SavedScreenProps> = ({ navigation }) => {
   const [savedCars, setSavedCars] = useState<Car[]>([]);
 
   // TODO: fetch saved cars of the user
-  const fetchSavedCars = async () => {
-    // Mock up
-    const cars = await getTopFive();
-    if (cars) {
-      setSavedCars(cars);
-    }
-  };
-
   useEffect(() => {
-    fetchSavedCars();
+    const unsubscribe = getSavedCars((data) => {
+      setSavedCars(data); // Update state with the data from Firebase
+    });
+
+    // Cleanup: Unsubscribe from the listener when the component unmounts
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, []);
 
   // Navigate to Car detail screen
