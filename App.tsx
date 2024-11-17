@@ -46,6 +46,7 @@ const App: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     minHeight: Dimensions.get("window").height,
+    backgroundColor: "white",
   },
 });
 
