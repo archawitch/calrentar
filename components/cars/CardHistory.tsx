@@ -16,9 +16,9 @@ type CarHistoryProp = {
 };
 
 const CardHistory = (props: CarHistoryProp) => {
-  const { make, model, pickup_date, price_paid } = props.history
+  const { make, model, pickup_date, price_paid } = props.history;
   const getStatus = () => {
-    if (pickup_date.getDate() >= new Date(Date.now()).getDate()) {
+    if (pickup_date >= new Date(Date.now())) {
       return `waiting on ${pickup_date.toLocaleDateString("en-US")}`;
     }
 

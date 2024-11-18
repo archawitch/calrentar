@@ -97,8 +97,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   }, [isSuccess]);
 
   return !isSuccess ? (
-    <KeyboardAvoidingView behavior="position">
-      <ScrollView style={styles.scrollView}>
+    <ScrollView style={styles.scrollView}>
+      <KeyboardAvoidingView behavior="position">
         <View style={styles.container}>
           <Header title="Profile" />
           <View style={{ alignItems: "center" }}>
@@ -152,8 +152,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
             }}
           />
         </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </ScrollView>
   ) : (
     <Alert
       type="notify"
@@ -170,8 +170,9 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    justifyContent: "center",
     paddingTop: 16,
-    paddingBottom: 76,
+    paddingBottom: 20,
     paddingHorizontal: 20,
     gap: 16,
   },

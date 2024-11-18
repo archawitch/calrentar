@@ -26,10 +26,7 @@ const ButtonLarge = (props: ButtonLargeProp) => {
 
   return (
     <TouchableOpacity
-      style={[
-        styles.button,
-        { backgroundColor: !props.disabled ? "#2B2930" : "#CCCCCC" },
-      ]}
+      style={[styles.button, { backgroundColor: "#2B2930" }]}
       onPress={props.onPress}>
       <Text style={styles.title}>{props.title}</Text>
     </TouchableOpacity>
