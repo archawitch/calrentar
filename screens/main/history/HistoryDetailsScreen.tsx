@@ -16,15 +16,7 @@ const HistoryDetailsScreen: React.FC<HistoryDetailsScreenProps> = ({
   route,
 }) => {
   const {
-    history: {
-      id,
-      car_id,
-      make,
-      model,
-      pickup_date,
-      price_paid,
-      return_date,
-    },
+    history: { id, car_id, make, model, pickup_date, price_paid, return_date },
   } = route.params;
 
   const [historyDetail, setHistoryDetail] = useState<History>({
@@ -39,7 +31,7 @@ const HistoryDetailsScreen: React.FC<HistoryDetailsScreenProps> = ({
     pickup_type: "Self-pickup",
     pickup_location: "",
     renter_name: "",
-    driver_license_no: ""
+    driver_license_no: "",
   });
 
   const fetchHistoryDetail = async () => {
@@ -47,14 +39,15 @@ const HistoryDetailsScreen: React.FC<HistoryDetailsScreenProps> = ({
     if (historyDetail) {
       setHistoryDetail(historyDetail);
     }
-  }
+  };
 
   useEffect(() => {
     fetchHistoryDetail();
-  }, [])
+  }, []);
 
   const getRentalPrice = () => {
-    let pickupPrice = historyDetail.pickup_type === "Delivery service" ? 300 : 0;
+    let pickupPrice =
+      historyDetail.pickup_type === "Delivery service" ? 300 : 0;
     return price_paid - pickupPrice;
   };
 
@@ -106,7 +99,10 @@ const HistoryDetailsScreen: React.FC<HistoryDetailsScreenProps> = ({
             },
             {
               title: "Delivery Fee",
-              details: historyDetail.pickup_type === "Delivery service" ? "300 THB" : "",
+              details:
+                historyDetail.pickup_type === "Delivery service"
+                  ? "300 THB"
+                  : "",
             },
           ]}
         />
@@ -134,7 +130,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingTop: 16,
-    paddingBottom: 40,
     paddingHorizontal: 20,
     backgroundColor: "white",
     gap: 16,

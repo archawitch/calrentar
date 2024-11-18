@@ -19,36 +19,39 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
   route,
 }) => {
   const { carData, rentForm } = route.params;
-  const pricePaid = carData.rental_price + (rentForm.pickupType === "Delivery service" ? 300 : 0);
+  const pricePaid =
+    carData.rental_price +
+    (rentForm.pickupType === "Delivery service" ? 300 : 0);
   const [isConfirm, setIsConfirm] = useState<boolean>(false);
 
-  // TODO: handle rent confirmation here ...
+  // NOTE: handle rent confirmation here ...
   const handleConfirmRent = async () => {
-    // TODO: add rent information to database
-    // might save as History type
-    const rentInfo: History = {
-      car_id: carData.id,
-      make: carData.make,
-      model: carData.model,
-      year_produced: carData.year_produced,
-      color: carData.color,
-      price_paid: pricePaid,
-      pickup_date: rentForm.pickupDate,
-      return_date: rentForm.returnDate,
-      pickup_type: rentForm.pickupType,
-      pickup_location: rentForm.pickupLocation,
-      renter_name: rentForm.name,
-      driver_license_no: rentForm.driverLicense
+    // NOTE: add rent information to database
+    if (!isConfirm) {
+      const rentInfo: History = {
+        car_id: carData.id,
+        make: carData.make,
+        model: carData.model,
+        year_produced: carData.year_produced,
+        color: carData.color,
+        price_paid: pricePaid,
+        pickup_date: rentForm.pickupDate,
+        return_date: rentForm.returnDate,
+        pickup_type: rentForm.pickupType,
+        pickup_location: rentForm.pickupLocation,
+        renter_name: rentForm.name,
+        driver_license_no: rentForm.driverLicense,
+      };
+      const { isSuccess, msg } = await rentCar(rentInfo);
+
+      if (!isSuccess) {
+        alert(msg);
+        return;
+      }
+
+      // Open alert screen
+      setIsConfirm(isSuccess);
     }
-    const { isSuccess, msg } = await rentCar(rentInfo);
-
-    if (!isSuccess) {
-      alert(msg);
-      return;
-    }  
-
-    // Open alert screen
-    setIsConfirm(isSuccess);
   };
 
   // After showing alert screen, navigate to history screen
@@ -138,14 +141,19 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
             data={[
               {
                 title: "Total Payment",
-                details: `${
-                  pricePaid
-                } THB`,
+                details: `${pricePaid} THB`,
               },
             ]}
           />
         </View>
-        <ButtonLarge title="Confirm" onPress={handleConfirmRent} />
+        <ButtonLarge
+          title="Confirm"
+          disabled={isConfirm}
+          onPress={() => {
+            setIsConfirm(true);
+            handleConfirmRent();
+          }}
+        />
       </View>
     </ScrollView>
   ) : (
@@ -166,7 +174,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingTop: 16,
-    paddingBottom: 88,
+    paddingBottom: 32,
     paddingHorizontal: 20,
     backgroundColor: "white",
     gap: 16,

@@ -178,7 +178,7 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
 
     if (form.driverLicense.trim().length !== 8) return false;
 
-    if (pickupDate.getDate() < new Date(Date.now()).getDate()) return false;
+    if (pickupDate < new Date(Date.now())) return false;
 
     return true;
   };
@@ -449,7 +449,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     paddingTop: 16,
-    paddingBottom: 88,
+    paddingBottom: 32,
     paddingHorizontal: 20,
     backgroundColor: "white",
     gap: 16,

@@ -133,10 +133,7 @@ function MainNavigator() {
         tabBarInactiveTintColor: "#A1A1A6",
         tabBarStyle: {
           paddingTop: 5,
-          borderTopLeftRadius: 15,
-          borderTopRightRadius: 15,
           backgroundColor: "white",
-          position: "absolute",
           height: 55,
         },
         tabBarLabelStyle: { paddingBottom: 2 },

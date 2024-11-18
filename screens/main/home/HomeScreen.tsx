@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -9,7 +9,6 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import DateTimePicker from "@react-native-community/datetimepicker";
 
 import { HomeScreenProps } from "@appTypes/navigation/navigationTypes";
 import { Car } from "@appTypes/cars/carTypes";
@@ -23,6 +22,7 @@ import ButtonSmall from "@components/buttons/ButtonSmall";
 import CardCarRent from "@components/cars/CardCarRent";
 
 import { getCars, getLocations, getTopFive } from "@services/homeServices";
+import DatePicker from "@components/datepicker/DatePicker";
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [allCars, setAllCars] = useState<Car[]>([]);
@@ -40,7 +40,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       minPrice: 0,
       maxPrice: 100000,
     },
-    location: [],
+    location: [
+      "Bangkok",
+      "Phuket",
+      "Chiang Mai",
+      "Pattaya",
+      "Nakhon Ratchasima",
+    ],
     makes: [],
     models: [],
     colors: [],
@@ -48,8 +54,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [currentPickupDate, setCurrentPickupDate] = useState<Date>(
     new Date(Date.now())
   );
+  const [minDate, setMinDate] = useState<Date>(new Date(Date.now()));
   const [showFilter, setShowFilter] = useState<boolean>(false);
   const [showDatePicker, setShowDatePicker] = useState<boolean>(false);
+  const [carListTitle, setCarListTitle] = useState<string>("Popular Cars");
+
+  const isInit = useRef(true);
 
   // NOTE: Handle searching based on filters
   const handleSearch = () => {
@@ -207,11 +217,33 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     }
   };
 
+  // NOTE: get minimum date for date picker
+  const getMinDate = () => {
+    const currentDate = new Date(Date.now());
+    const minDate = new Date("2024-12-01");
+    return currentDate > minDate ? currentDate : minDate;
+  };
+
+  // NOTE: initialize date for date picker and pickup date
+  useEffect(() => {
+    const minDate = getMinDate();
+    setMinDate(minDate);
+    setCurrentPickupDate(minDate);
+    setFilter((prev) => ({
+      ...prev,
+      pickupDate: minDate,
+    }));
+  }, []);
+
   // NOTE: retrieve popular cars list here ...
   useEffect(() => {
-    fetchCars();
-    fetchLocation();
-    fetchTopFive();
+    const fetchData = async () => {
+      await fetchCars();
+      await fetchLocation();
+      await fetchTopFive();
+      isInit.current = false;
+    };
+    fetchData();
   }, []);
 
   // NOTE: handle location selection ...
@@ -246,7 +278,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   // NOTE: handle filter changed
   useEffect(() => {
-    handleSearch();
+    if (!isInit.current) {
+      handleSearch();
+      setCarListTitle("Available Cars");
+    }
   }, [filter]);
 
   // Render Filter screen
@@ -396,11 +431,9 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           </TouchableWithoutFeedback>
           {showDatePicker && (
             <View style={styles.datePicker}>
-              <DateTimePicker
-                testID="dateTimePicker"
-                value={filter.pickupDate ?? new Date(Date.now())}
-                mode="date"
-                display="inline"
+              <DatePicker
+                value={filter.pickupDate}
+                minimumDate={minDate}
                 onChange={(event, selectedDate) => {
                   setFilter((prev) => ({
                     ...prev,
@@ -413,7 +446,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           )}
         </View>
         <ButtonSmall title="Search" onPress={handleSearch} />
-        <SubHeader title="Popular Cars" />
+        <SubHeader title={carListTitle} />
         {searchResults.map((carData) => {
           return (
             <CardCarRent
@@ -439,7 +472,7 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
     paddingTop: 16,
-    paddingBottom: 76,
+    paddingBottom: 20,
     gap: 16,
   },
   inputContainer: {
