@@ -4,7 +4,8 @@ import ImageContain from "@components/images/ImageContain";
 
 import { Car } from "@appTypes/cars/carTypes";
 
-import { getCarLogo, getCarImage } from "@services/homeServices";
+import { getCarLogo } from "@services/homeServices";
+import { getCarImage } from "@services/carDetailServices";
 
 type CardCarRentProp = {
   carData: Car;
