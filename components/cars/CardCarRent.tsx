@@ -21,15 +21,26 @@ import { getSaveStatus, updateSaveStatus } from "@services/saveServices";
 type CardCarRentProp = {
   carData: Car;
   pickupDate: Date;
-  onPress: ((event: GestureResponderEvent) => void) | undefined;
+  onPress: (event: GestureResponderEvent) => void;
 };
 
 const CardCarRent = (props: CardCarRentProp) => {
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const { carData, pickupDate, onPress } = props;
 
-  // TODO: logic when clicking favorite button
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
+  const [isAvailable, setIsAvailable] = useState<boolean>(true);
+
+  // NOTE: check if the car is available on selected pickup date
+  const checkAvailable = () => {
+    const formattedDate = pickupDate.toISOString().split("T")[0];
+
+    if (carData.rent_date && carData.rent_date[formattedDate]) return false;
+    return true;
+  };
+
+  // NOTE: logic when clicking favorite button
   const handleFavorite = async () => {
-    const {isSuccess, msg} = await updateSaveStatus(props.carData.id);
+    const { isSuccess, msg } = await updateSaveStatus(carData.id);
     if (!isSuccess) {
       alert(msg);
       return;
@@ -39,9 +50,19 @@ const CardCarRent = (props: CardCarRentProp) => {
     setIsFavorite(!isFavorite);
   };
 
+  // NOTE: get button title
+  const getButtonTitle = () => {
+    if (isAvailable) {
+      const isNow = pickupDate === new Date(Date.now());
+      return `Rent${isNow ? " now" : ""} at ${carData.rental_price} THB/day`;
+    }
+
+    return `Not available`;
+  };
+
   // Check if the card is marked as favorite or not when first render
   useEffect(() => {
-    const unsubscribe = getSaveStatus(props.carData.id, (status) => {
+    const unsubscribe = getSaveStatus(carData.id, (status) => {
       setIsFavorite(status); // Update state with the data from Firebase
     });
 
@@ -53,12 +74,21 @@ const CardCarRent = (props: CardCarRentProp) => {
     };
   }, []);
 
+  // Check if the car is available on selected pickup date or not
+  useEffect(() => {
+    const available = checkAvailable();
+    setIsAvailable(available);
+  }, []);
+
   return (
-    <TouchableWithoutFeedback onPress={props.onPress}>
+    <TouchableWithoutFeedback
+      onPress={(event) => {
+        if (isAvailable) onPress(event);
+      }}>
       <View style={styles.card}>
         <View style={styles.header}>
-          <Image style={styles.logo} source={getCarLogo(props.carData.make)} />
-          <Text style={styles.model}>{props.carData.model}</Text>
+          <Image style={styles.logo} source={getCarLogo(carData.make)} />
+          <Text style={styles.model}>{carData.model}</Text>
           <TouchableOpacity onPress={handleFavorite}>
             <MaterialIcons
               name="favorite"
@@ -67,14 +97,11 @@ const CardCarRent = (props: CardCarRentProp) => {
             />
           </TouchableOpacity>
         </View>
-        <ImageContain source={getCarImage(props.carData.id)} />
+        <ImageContain source={getCarImage(carData.id)} />
         <ButtonSmall
-          title={`Rent${
-            props.pickupDate.getDate() === new Date(Date.now()).getDate()
-              ? " now"
-              : ""
-          } at ${props.carData.rental_price} THB/day`}
-          onPress={props.onPress}
+          title={getButtonTitle()}
+          onPress={onPress}
+          disabled={!isAvailable}
         />
       </View>
     </TouchableWithoutFeedback>

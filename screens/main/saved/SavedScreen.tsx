@@ -11,11 +11,13 @@ import { getSavedCars } from "@services/saveServices";
 const SavedScreen: React.FC<SavedScreenProps> = ({ navigation }) => {
   const [savedCars, setSavedCars] = useState<Car[]>([]);
 
-  const getPickupDate = () => {
+  const pickupDate: Date = getPickupDate();
+
+  function getPickupDate() {
     const now = new Date(Date.now());
     const minDate = new Date("2024-12-01");
     return now > minDate ? now : minDate;
-  };
+  }
 
   // NOTE: fetch saved cars of the user
   useEffect(() => {
@@ -32,7 +34,7 @@ const SavedScreen: React.FC<SavedScreenProps> = ({ navigation }) => {
   }, []);
 
   // Navigate to Car detail screen
-  const navigateToCarInfo = (car: Car, pickupDate: Date) => {
+  const navigateToCarInfo = (car: Car) => {
     navigation.navigate("Main", {
       screen: "HomeTab",
       params: {
@@ -50,15 +52,12 @@ const SavedScreen: React.FC<SavedScreenProps> = ({ navigation }) => {
       <View style={styles.container}>
         <Header title="Saved" />
         {savedCars.map((carData) => {
-          {
-            /*** TODO: Don't forget to implement saved function in CardCarRent ***/
-          }
           return (
             <CardCarRent
               key={carData.id}
               carData={carData}
-              pickupDate={getPickupDate()}
-              onPress={() => navigateToCarInfo(carData, new Date(Date.now()))}
+              pickupDate={pickupDate}
+              onPress={() => navigateToCarInfo(carData)}
             />
           );
         })}

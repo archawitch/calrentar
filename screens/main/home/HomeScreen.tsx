@@ -20,15 +20,22 @@ import ToggleButton from "@components/buttons/ToggleButton";
 import Header from "@components/headers/Header";
 import ButtonSmall from "@components/buttons/ButtonSmall";
 import CardCarRent from "@components/cars/CardCarRent";
+import DatePicker from "@components/datepicker/DatePicker";
 
 import { getCars, getLocations, getTopFive } from "@services/homeServices";
-import DatePicker from "@components/datepicker/DatePicker";
+import { formatDate } from "@services/utilsServices";
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [allCars, setAllCars] = useState<Car[]>([]);
   const [allLocations, setAllLocations] = useState<string[]>([]);
 
-  const [searchResults, setSearchResults] = useState<Car[]>([]);
+  const [searchResults, setSearchResults] = useState<{
+    availableCars: Car[];
+    unavailableCars: Car[];
+  }>({
+    availableCars: [],
+    unavailableCars: [],
+  });
   const [makes, setMakes] = useState<string[]>([]);
   const [models, setModels] = useState<string[]>([]);
   const [colors, setColors] = useState<string[]>([]);
@@ -78,12 +85,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       return;
     }
 
-    const formattedDate = pickupDate.toISOString().split("T")[0];
+    const formattedDate = formatDate(pickupDate);
     const searchPattern = new RegExp(filter.searchInput, "i");
 
+    const unavailableCars: Car[] = [];
     const availableCars = allCars.filter((car) => {
-      if (car.rent_date && car.rent_date[formattedDate]) return false;
-
       if (
         searchInput &&
         !searchPattern.test(car.make) &&
@@ -106,12 +112,23 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
       if (colors.length > 0 && !colors.includes(car.color)) return false;
 
+      if (car.rent_date && car.rent_date[formattedDate]) {
+        unavailableCars.push(car);
+        return false;
+      }
+
       return true;
     });
 
     // Parse search results
-    setSearchResults(availableCars);
+    setSearchResults({
+      availableCars: availableCars,
+      unavailableCars: unavailableCars,
+    });
     setCurrentPickupDate(pickupDate);
+
+    // Set car list title
+    setCarListTitle("Available Cars");
   };
 
   // NOTE: Handle to navigate to car information
@@ -202,7 +219,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const fetchTopFive = async () => {
     let topFive = await getTopFive();
     if (topFive) {
-      setSearchResults(topFive);
+      setSearchResults((prev) => ({
+        ...prev,
+        availableCars: topFive,
+      }));
     }
   };
 
@@ -280,7 +300,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   useEffect(() => {
     if (!isInit.current) {
       handleSearch();
-      setCarListTitle("Available Cars");
     }
   }, [filter]);
 
@@ -423,9 +442,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                   styles.inputText,
                   { color: filter.pickupDate ? "black" : "#bbbbbb" },
                 ]}>
-                {filter.pickupDate
-                  ? filter.pickupDate.toLocaleDateString("en-US")
-                  : "Pick-up date"}
+                {formatDate(filter.pickupDate)}
               </Text>
             </View>
           </TouchableWithoutFeedback>
@@ -446,8 +463,23 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
           )}
         </View>
         <ButtonSmall title="Search" onPress={handleSearch} />
-        <SubHeader title={carListTitle} />
-        {searchResults.map((carData) => {
+        {searchResults.availableCars.length > 0 && (
+          <SubHeader title={carListTitle} />
+        )}
+        {searchResults.availableCars.map((carData) => {
+          return (
+            <CardCarRent
+              key={carData.id}
+              carData={carData}
+              pickupDate={currentPickupDate}
+              onPress={() => navigateToCarInfo(carData, currentPickupDate)}
+            />
+          );
+        })}
+        {searchResults.unavailableCars.length > 0 && (
+          <SubHeader title="Unavailable Cars" />
+        )}
+        {searchResults.unavailableCars.map((carData) => {
           return (
             <CardCarRent
               key={carData.id}

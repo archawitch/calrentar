@@ -6,9 +6,10 @@ import {
   GestureResponderEvent,
   TouchableWithoutFeedback,
 } from "react-native";
+import { HistoryItem } from "@appTypes/history/historyTypes";
 
 import { getCarLogo } from "@services/homeServices";
-import { HistoryItem } from "@appTypes/history/historyTypes";
+import { formatDate } from "@services/utilsServices";
 
 type CarHistoryProp = {
   history: HistoryItem;
@@ -19,7 +20,7 @@ const CardHistory = (props: CarHistoryProp) => {
   const { make, model, pickup_date, price_paid } = props.history;
   const getStatus = () => {
     if (pickup_date >= new Date(Date.now())) {
-      return `waiting on ${pickup_date.toLocaleDateString("en-US")}`;
+      return `waiting on ${formatDate(pickup_date)}`;
     }
 
     return "success";

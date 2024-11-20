@@ -28,7 +28,7 @@ const SignupScreen: React.FC<SignupScreenNavigationProp> = ({ navigation }) => {
       // Signup logic
       const { isSuccess, msg } = await signup(email, password, confirmPassword);
 
-      // Update status
+      // // Update status
       !isSuccess ? alert(msg) : setIsAuthenticated(isSuccess);
 
       // Enable sign up button
@@ -79,6 +79,7 @@ const SignupScreen: React.FC<SignupScreenNavigationProp> = ({ navigation }) => {
         </View>
         <ButtonLarge
           title="Sign up"
+          disabled={isPressed}
           onPress={() => {
             setIsPressed(true);
             handleSignup();
