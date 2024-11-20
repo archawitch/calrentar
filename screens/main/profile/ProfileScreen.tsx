@@ -13,6 +13,7 @@ import Header from "@components/headers/Header";
 import LabelInput from "@components/inputs/LabelInput";
 import ButtonLarge from "@components/buttons/ButtonLarge";
 import Alert from "@components/alert/Alert";
+import { getUserEmail } from "@services/profileService";
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const [form, setForm] = useState<ProfileForm>({
@@ -25,10 +26,10 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const [isPressed, setIsPressed] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
-  // TODO: fetch saved cars of the user
-  const fetchEmail = async () => {
+  // TODO: fetch user information
+  const fetchEmail = () => {
     // Mock up
-    const email = "john.doe@gmail.com";
+    const email = getUserEmail();
     if (email) {
       setForm((prev) => ({
         ...prev,
@@ -64,13 +65,13 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     if (!isPressed) {
       // Mock up
       setTimeout(() => {
-        const { success, msg } = { success: true, msg: "unsuccessful alert" };
+        const { isSuccess, msg } = { isSuccess: true, msg: "unsuccessful alert" };
 
         // Enable the button after changing/checking
         setIsPressed(false);
 
         // Alert if failed
-        if (!success) {
+        if (!isSuccess) {
           alert(msg);
           return;
         }
