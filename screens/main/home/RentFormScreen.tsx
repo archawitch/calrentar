@@ -15,6 +15,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import { RentFormScreenProps } from "@appTypes/navigation/navigationTypes";
 import { RentFormType } from "@appTypes/screens/screenTypes";
+
 import Header from "@components/headers/Header";
 import SubHeader from "@components/headers/SubHeader";
 import CardCarModel from "@components/cars/CardCarModel";
@@ -22,6 +23,8 @@ import ToggleButton from "@components/buttons/ToggleButton";
 import ButtonLarge from "@components/buttons/ButtonLarge";
 import Input from "@components/inputs/Input";
 import ButtonSmall from "@components/buttons/ButtonSmall";
+
+import { formatDate } from "@services/utilsServices";
 
 const RentFormScreen: React.FC<RentFormScreenProps> = ({
   navigation,
@@ -329,13 +332,13 @@ const RentFormScreen: React.FC<RentFormScreenProps> = ({
           <Input
             iconName="calendar-month"
             editable={false}
-            value={pickupDate.toLocaleDateString("en-US")}
+            value={formatDate(pickupDate)}
           />
           <SubHeader title="Return date" />
           <Input
             iconName="calendar-month"
             editable={false}
-            value={returnDate.toLocaleDateString("en-US")}
+            value={formatDate(returnDate)}
           />
           <SubHeader title="Pick-up type" />
           <View style={styles.btnContainer}>

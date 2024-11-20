@@ -3,14 +3,16 @@ import { ScrollView, View, StyleSheet } from "react-native";
 
 import { HistoryScreenProps } from "@appTypes/navigation/navigationTypes";
 import { HistoryItem } from "@appTypes/history/historyTypes";
+
 import Header from "@components/headers/Header";
 import CardHistory from "@components/cars/CardHistory";
+
 import { getHistoryList } from "@services/historyServices";
 
 const HistoryScreen: React.FC<HistoryScreenProps> = ({ navigation }) => {
   const [history, setHistory] = useState<HistoryItem[]>([]);
 
-  // TODO: fetch history of the user
+  // NOTE: fetch history of the user
   const fetchHistory = useCallback(async () => {
     let historyList = await getHistoryList();
     if (historyList) {

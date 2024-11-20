@@ -13,6 +13,7 @@ import Alert from "@components/alert/Alert";
 
 import { getCarImage } from "@services/homeServices";
 import { rentCar } from "@services/rentServices";
+import { formatDate } from "@services/utilsServices";
 
 const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
   navigation,
@@ -60,7 +61,6 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
       setTimeout(() => {
         navigation.reset({
           index: 0,
-          // TODO: Change to history screen
           routes: [
             {
               name: "Main",
@@ -91,11 +91,11 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
           data={[
             {
               title: "Pick-up Date",
-              details: rentForm.pickupDate.toLocaleDateString("en-US"),
+              details: formatDate(rentForm.pickupDate),
             },
             {
               title: "Return Date",
-              details: rentForm.returnDate.toLocaleDateString("en-US"),
+              details: formatDate(rentForm.returnDate),
             },
             { title: "Type", details: rentForm.pickupType },
             {

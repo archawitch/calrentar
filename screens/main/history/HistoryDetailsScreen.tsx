@@ -1,15 +1,17 @@
+import { useEffect, useState } from "react";
 import { ScrollView, View, StyleSheet } from "react-native";
 
 import { HistoryDetailsScreenProps } from "@appTypes/navigation/navigationTypes";
+import { History } from "@appTypes/history/historyTypes";
+
 import Header from "@components/headers/Header";
 import SubHeader from "@components/headers/SubHeader";
 import ImageContain from "@components/images/ImageContain";
 import ListDetails from "@components/lists/ListDetails";
 
 import { getCarImage } from "@services/homeServices";
-import { useEffect, useState } from "react";
 import { getHistoryDetail } from "@services/historyServices";
-import { History } from "@appTypes/history/historyTypes";
+import { formatDate } from "@services/utilsServices";
 
 const HistoryDetailsScreen: React.FC<HistoryDetailsScreenProps> = ({
   navigation,
@@ -70,11 +72,11 @@ const HistoryDetailsScreen: React.FC<HistoryDetailsScreenProps> = ({
           data={[
             {
               title: "Pick-up Date",
-              details: historyDetail.pickup_date.toLocaleDateString("en-US"),
+              details: formatDate(historyDetail.pickup_date),
             },
             {
               title: "Return Date",
-              details: historyDetail.return_date.toLocaleDateString("en-US"),
+              details: formatDate(historyDetail.return_date),
             },
             {
               title: "Type",

@@ -7,20 +7,21 @@ type ImageContainProp = {
 const ImageContain = (props: ImageContainProp) => {
   return (
     <View style={styles.container}>
-      <Image style={styles.image} source={props.source} />
+      <Image style={styles.image} source={props.source} resizeMode="contain" />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: "row",
-    paddingVertical: 10,
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingHorizontal: 16,
   },
   image: {
-    flex: 1,
+    height: 150,
     width: "100%",
-    resizeMode: "contain",
   },
 });
 
