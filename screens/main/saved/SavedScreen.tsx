@@ -11,7 +11,13 @@ import { getSavedCars } from "@services/saveServices";
 const SavedScreen: React.FC<SavedScreenProps> = ({ navigation }) => {
   const [savedCars, setSavedCars] = useState<Car[]>([]);
 
-  // TODO: fetch saved cars of the user
+  const getPickupDate = () => {
+    const now = new Date(Date.now());
+    const minDate = new Date("2024-12-01");
+    return now > minDate ? now : minDate;
+  };
+
+  // NOTE: fetch saved cars of the user
   useEffect(() => {
     const unsubscribe = getSavedCars((data) => {
       setSavedCars(data); // Update state with the data from Firebase
@@ -51,7 +57,7 @@ const SavedScreen: React.FC<SavedScreenProps> = ({ navigation }) => {
             <CardCarRent
               key={carData.id}
               carData={carData}
-              pickupDate={new Date(Date.now())}
+              pickupDate={getPickupDate()}
               onPress={() => navigateToCarInfo(carData, new Date(Date.now()))}
             />
           );

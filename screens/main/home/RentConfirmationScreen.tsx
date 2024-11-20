@@ -60,7 +60,6 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
       setTimeout(() => {
         navigation.reset({
           index: 0,
-          // TODO: Change to history screen
           routes: [
             {
               name: "Main",
