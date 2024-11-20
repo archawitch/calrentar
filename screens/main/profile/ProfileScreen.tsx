@@ -13,7 +13,7 @@ import Header from "@components/headers/Header";
 import LabelInput from "@components/inputs/LabelInput";
 import ButtonLarge from "@components/buttons/ButtonLarge";
 import Alert from "@components/alert/Alert";
-import { getUserEmail } from "@services/profileService";
+import { changeUserPassword, getUserEmail } from "@services/profileService";
 
 const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const [form, setForm] = useState<ProfileForm>({
@@ -64,8 +64,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const changePassword = () => {
     if (!isPressed) {
       // Mock up
-      setTimeout(() => {
-        const { isSuccess, msg } = { isSuccess: true, msg: "unsuccessful alert" };
+      setTimeout(async () => {
+        const { isSuccess, msg } = await changeUserPassword(
+          form.oldPassword,
+          form.newPassword,
+          form.confirmPassword
+        );
 
         // Enable the button after changing/checking
         setIsPressed(false);
