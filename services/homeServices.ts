@@ -70,18 +70,18 @@ export const getTopFive = async (): Promise<Car[] | void> => {
 
 export const getCarLogo = (make: string) => {
   const carLogo: Record<string, any> = {
-    Toyota: require("@assets/images/illustrations/login-illustration.png"),
-    Honda: require("@assets/images/illustrations/login-illustration.png"),
-    Chevrolet: require("@assets/images/illustrations/login-illustration.png"),
-    BMW: require("@assets/images/illustrations/login-illustration.png"),
-    "Mercedes-Benz": require("@assets/images/illustrations/login-illustration.png"),
-    Volkswagen: require("@assets/images/illustrations/login-illustration.png"),
-    Hyundai: require("@assets/images/illustrations/login-illustration.png"),
-    Kia: require("@assets/images/illustrations/login-illustration.png"),
-    Mazda: require("@assets/images/illustrations/login-illustration.png"),
-    Subaru: require("@assets/images/illustrations/login-illustration.png"),
-    Acura: require("@assets/images/illustrations/login-illustration.png"),
-    Volvo: require("@assets/images/illustrations/login-illustration.png"),
+    Toyota: require("@assets/logos/toyota.png"),
+    Honda: require("@assets/logos/honda.png"),
+    Chevrolet: require("@assets/logos/chevrolet.png"),
+    BMW: require("@assets/logos/bmw.png"),
+    "Mercedes-Benz": require("@assets/logos/mercedes_benz.png"),
+    Volkswagen: require("@assets/logos/volkswagen.png"),
+    Hyundai: require("@assets/logos/hyundai.png"),
+    Kia: require("@assets/logos/kia.png"),
+    Mazda: require("@assets/logos/mazda.png"),
+    Subaru: require("@assets/logos/subaru.png"),
+    Acura: require("@assets/logos/acura.png"),
+    Volvo: require("@assets/logos/volvo.png"),
   };
 
   return carLogo[make];
