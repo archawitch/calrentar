@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
   logo: {
     height: 30,
     width: 30,
+    resizeMode: "contain"
   },
   detailsContainer: {
     flex: 1,
