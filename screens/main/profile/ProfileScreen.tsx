@@ -61,28 +61,25 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   }, [form]);
 
   // TODO: changing password logic here ...
-  const changePassword = () => {
+  const changePassword = async () => {
     if (!isPressed) {
-      // Mock up
-      setTimeout(async () => {
-        const { isSuccess, msg } = await changeUserPassword(
-          form.oldPassword,
-          form.newPassword,
-          form.confirmPassword
-        );
+      const { isSuccess, msg } = await changeUserPassword(
+        form.oldPassword,
+        form.newPassword,
+        form.confirmPassword
+      );
 
-        // Enable the button after changing/checking
-        setIsPressed(false);
+      // Enable the button after changing/checking
+      setIsPressed(false);
 
-        // Alert if failed
-        if (!isSuccess) {
-          alert(msg);
-          return;
-        }
+      // Alert if failed
+      if (!isSuccess) {
+        alert(msg);
+        return;
+      }
 
-        // Set isSuccess to open Alert screen
-        setIsSuccess(true);
-      }, 1000);
+      // Set isSuccess to open Alert screen
+      setIsSuccess(true);
     }
   };
 
