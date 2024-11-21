@@ -6,6 +6,7 @@ import {
 import { FirebaseError } from "firebase/app";
 
 import { auth, database } from "@configs/firebaseConfig";
+import { validatePassword } from "./utilsServices";
 
 export const signup = async (
   username: string,
@@ -13,23 +14,14 @@ export const signup = async (
   confirmPassword: string
 ): Promise<{ isSuccess: boolean; msg: string }> => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  const passwordRegex =
-    /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*(),.?":{}|<>])[A-Za-z\d!@#$%^&*(),.?":{}|<>]{8,}$/;
 
   if (!emailRegex.test(username)) {
     return { isSuccess: false, msg: "Email is invalid" };
-  } else if (password !== confirmPassword) {
-    return { isSuccess: false, msg: "Passwords do not match" };
-  } else if (password.length < 8) {
-    return {
-      isSuccess: false,
-      msg: "Password must have at least 8 characters",
-    };
-  } else if (!passwordRegex.test(password)) {
-    return {
-      isSuccess: false,
-      msg: "Password must be at least 8 characters, including one uppercase letter (A-Z), one lowercase letter (a-z), one number (0-9), and one special character (e.g., !, @, #, $)",
-    };
+  }
+
+  const passValidation = validatePassword(password, confirmPassword);
+  if (!passValidation.isSuccess) {
+    return { isSuccess: false, msg: passValidation.msg};
   }
 
   try {
