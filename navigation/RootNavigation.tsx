@@ -1,6 +1,13 @@
 // Navigation.tsx
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Dimensions,
+  SafeAreaView,
+  Text,
+  View,
+  StyleSheet,
+} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -27,6 +34,7 @@ import SavedScreen from "@screens/main/saved/SavedScreen";
 import ProfileScreen from "@screens/main/profile/ProfileScreen";
 import { User } from "firebase/auth";
 import { auth } from "@configs/firebaseConfig";
+import LandingScreen from "@screens/landing/LandingScreen";
 
 const AuthStack = createStackNavigator<AuthStackParamList>();
 const HomeStack = createStackNavigator<HomeStackParamList>();
@@ -165,10 +173,9 @@ const MainNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
 
 // Root Navigation
 const RootNavigation: React.FC = () => {
+  const [isFirstTime, setIsFirstTime] = useState<boolean>(true);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-
-  console.log("user:", user);
 
   const checkUser = async () => {
     try {
@@ -183,8 +190,24 @@ const RootNavigation: React.FC = () => {
     }
   };
 
+  const checkLanding = async () => {
+    try {
+      const landing = await AsyncStorage.getItem("isFirstTime");
+      if (landing) {
+        const parsedLanding = landing === "true";
+        setIsFirstTime(parsedLanding);
+      }
+    } catch (error) {
+      console.log("Error retrieving landing from AsyncStorage:", error);
+    }
+  };
+
   useEffect(() => {
-    checkUser();
+    const checkApp = async () => {
+      await checkLanding();
+      await checkUser();
+    };
+    checkApp();
   }, []);
 
   if (loading) {
@@ -195,28 +218,70 @@ const RootNavigation: React.FC = () => {
     );
   }
 
-  return (
-    <NavigationContainer>
-      <RootStack.Navigator>
-        {user ? (
-          <RootStack.Screen name="Main" options={{ headerShown: false }}>
+  if (isFirstTime) {
+    return (
+      <NavigationContainer>
+        <RootStack.Navigator>
+          <RootStack.Screen name="Landing" options={{ headerShown: false }}>
             {(props) => (
-              <MainNavigator {...props} onLogout={() => setUser(null)} />
-            )}
-          </RootStack.Screen>
-        ) : (
-          <RootStack.Screen name="Auth" options={{ headerShown: false }}>
-            {(props) => (
-              <AuthNavigator
+              <LandingScreen
                 {...props}
-                onLogin={() => setUser(auth.currentUser)}
+                onContinue={() => {
+                  setIsFirstTime(false);
+                }}
               />
             )}
           </RootStack.Screen>
-        )}
-      </RootStack.Navigator>
-    </NavigationContainer>
+        </RootStack.Navigator>
+      </NavigationContainer>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <NavigationContainer>
+        <RootStack.Navigator>
+          {user ? (
+            <RootStack.Screen name="Main" options={{ headerShown: false }}>
+              {(props) => (
+                <MainNavigator
+                  {...props}
+                  onLogout={() => {
+                    setUser(null);
+                  }}
+                />
+              )}
+            </RootStack.Screen>
+          ) : (
+            <RootStack.Screen name="Auth" options={{ headerShown: false }}>
+              {(props) => (
+                <AuthNavigator
+                  {...props}
+                  onLogin={() => {
+                    const setLanding = async () => {
+                      await AsyncStorage.setItem(
+                        "isFirstTime",
+                        JSON.stringify("false")
+                      );
+                    };
+                    setLanding();
+                    setUser(auth.currentUser);
+                  }}
+                />
+              )}
+            </RootStack.Screen>
+          )}
+        </RootStack.Navigator>
+      </NavigationContainer>
+    </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    minHeight: Dimensions.get("window").height,
+    backgroundColor: "white",
+  },
+});
 
 export default RootNavigation;
