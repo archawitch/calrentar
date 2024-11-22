@@ -7,6 +7,7 @@ import { FirebaseError } from "firebase/app";
 
 import { auth, database } from "@configs/firebaseConfig";
 import { validatePassword } from "./utilsServices";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const signup = async (
   username: string,
@@ -63,9 +64,18 @@ export const login = async (
   }
 
   try {
-    await signInWithEmailAndPassword(auth, username, password);
+    const userCredential = await signInWithEmailAndPassword(auth, username, password);
+    const user = userCredential.user;
+    await AsyncStorage.setItem("user", JSON.stringify({
+      uid: user.uid,
+      email: user.email
+    }));
+    // onLogin();
+
     console.log(`${username} login successful`);
+
     return { isSuccess: true, msg: "Login successful" };
+
   } catch (error: unknown) {
     if (error instanceof FirebaseError) {
       console.log(error.code);
