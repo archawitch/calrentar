@@ -1,9 +1,10 @@
 // Navigation.tsx
-import React from "react";
-import { Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import {
@@ -24,6 +25,8 @@ import HistoryScreen from "@screens/main/history/HistoryScreen";
 import HistoryDetailsScreen from "@screens/main/history/HistoryDetailsScreen";
 import SavedScreen from "@screens/main/saved/SavedScreen";
 import ProfileScreen from "@screens/main/profile/ProfileScreen";
+import { User } from "firebase/auth";
+import { auth } from "@configs/firebaseConfig";
 
 const AuthStack = createStackNavigator<AuthStackParamList>();
 const HomeStack = createStackNavigator<HomeStackParamList>();
@@ -32,14 +35,12 @@ const MainTab = createBottomTabNavigator<MainTabParamList>();
 const RootStack = createStackNavigator<RootStackParamList>();
 
 // Auth Stack
-function AuthNavigator() {
+const AuthNavigator: React.FC<{ onLogin: () => void }> = ({ onLogin }) => {
   return (
     <AuthStack.Navigator initialRouteName="Login">
-      <AuthStack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{ headerShown: false }}
-      />
+      <AuthStack.Screen name="Login" options={{ headerShown: false }}>
+        {(props) => <LoginScreen {...props} onLogin={onLogin} />}
+      </AuthStack.Screen>
       <AuthStack.Screen
         name="Signup"
         component={SignupScreen}
@@ -47,10 +48,10 @@ function AuthNavigator() {
       />
     </AuthStack.Navigator>
   );
-}
+};
 
 // Home Stack
-function HomeNavigator() {
+const HomeNavigator = () => {
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
@@ -75,10 +76,10 @@ function HomeNavigator() {
       />
     </HomeStack.Navigator>
   );
-}
+};
 
 // History Stack
-function HistoryNavigator() {
+const HistoryNavigator = () => {
   return (
     <HistoryStack.Navigator>
       <HistoryStack.Screen
@@ -93,10 +94,10 @@ function HistoryNavigator() {
       />
     </HistoryStack.Navigator>
   );
-}
+};
 
 // Main Tab Navigator
-function MainNavigator() {
+const MainNavigator: React.FC<{ onLogout: () => void }> = ({ onLogout }) => {
   return (
     <MainTab.Navigator
       initialRouteName="HomeTab"
@@ -155,30 +156,64 @@ function MainNavigator() {
         component={SavedScreen}
         options={{ headerShown: false }}
       />
-      <MainTab.Screen
-        name="ProfileTab"
-        component={ProfileScreen}
-        options={{ headerShown: false }}
-      />
+      <MainTab.Screen name="ProfileTab" options={{ headerShown: false }}>
+        {(props) => <ProfileScreen {...props} onLogout={onLogout} />}
+      </MainTab.Screen>
     </MainTab.Navigator>
   );
-}
+};
 
 // Root Navigation
 const RootNavigation: React.FC = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  console.log("user:", user);
+
+  const checkUser = async () => {
+    try {
+      const userData = await AsyncStorage.getItem("user");
+      if (userData) {
+        setUser(JSON.parse(userData));
+      }
+    } catch (error) {
+      console.log("Error retrieving user from AsyncStorage:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    checkUser();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
       <RootStack.Navigator>
-        <RootStack.Screen
-          name="Auth"
-          component={AuthNavigator}
-          options={{ headerShown: false }}
-        />
-        <RootStack.Screen
-          name="Main"
-          component={MainNavigator}
-          options={{ headerShown: false }}
-        />
+        {user ? (
+          <RootStack.Screen name="Main" options={{ headerShown: false }}>
+            {(props) => (
+              <MainNavigator {...props} onLogout={() => setUser(null)} />
+            )}
+          </RootStack.Screen>
+        ) : (
+          <RootStack.Screen name="Auth" options={{ headerShown: false }}>
+            {(props) => (
+              <AuthNavigator
+                {...props}
+                onLogin={() => setUser(auth.currentUser)}
+              />
+            )}
+          </RootStack.Screen>
+        )}
       </RootStack.Navigator>
     </NavigationContainer>
   );

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -8,6 +8,7 @@ import {
   ScrollView,
   TouchableWithoutFeedback,
 } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 import { HomeScreenProps } from "@appTypes/navigation/navigationTypes";
@@ -26,6 +27,8 @@ import { getCars, getLocations, getTopFive } from "@services/homeServices";
 import { formatDate } from "@services/utilsServices";
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+  const isScreenFocused = useIsFocused();
+
   const [allCars, setAllCars] = useState<Car[]>([]);
   const [allLocations, setAllLocations] = useState<string[]>([]);
 
@@ -67,6 +70,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [carListTitle, setCarListTitle] = useState<string>("Popular Cars");
 
   const isInit = useRef(true);
+  const isFirstRender = useRef(true);
 
   // NOTE: Handle searching based on filters
   const handleSearch = () => {
@@ -244,8 +248,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     return currentDate > minDate ? currentDate : minDate;
   };
 
-  // NOTE: initialize date for date picker and pickup date
-  useEffect(() => {
+  // NOTE: initialize pickup date
+  const initDate = () => {
     const minDate = getMinDate();
     setMinDate(minDate);
     setCurrentPickupDate(minDate);
@@ -253,18 +257,50 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       ...prev,
       pickupDate: minDate,
     }));
-  }, []);
+  };
 
-  // NOTE: retrieve popular cars list here ...
+  // NOTE: reset all state
+  const resetState = () => {
+    setAllCars([]);
+    if (carListTitle !== "Popular Cars")
+      setSearchResults({ availableCars: [], unavailableCars: [] });
+  };
+
+  // NOTE: handle first render
   useEffect(() => {
     const fetchData = async () => {
       await fetchCars();
       await fetchLocation();
       await fetchTopFive();
       isInit.current = false;
+      isFirstRender.current = false;
     };
     fetchData();
+    initDate();
   }, []);
+
+  // NOTE: handle when comes from another tab ...
+  useEffect(() => {
+    if (isFirstRender.current) return;
+
+    if (isScreenFocused) {
+      const fetchData = async () => {
+        await fetchCars();
+        isInit.current = false;
+      };
+      fetchData();
+    } else {
+      isInit.current = true;
+      resetState();
+    }
+  }, [isScreenFocused]);
+
+  // NOTE: handle search when all cars has changed in addition to handling screen render
+  useEffect(() => {
+    if (isFirstRender.current) return;
+
+    if (carListTitle !== "Popular Cars") handleSearch();
+  }, [allCars]);
 
   // NOTE: handle location selection ...
   useEffect(() => {

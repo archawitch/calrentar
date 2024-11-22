@@ -54,6 +54,7 @@ export interface LoginScreenNavigationProp {
     StackNavigationProp<AuthStackParamList, "Login">,
     StackNavigationProp<RootStackParamList>
   >;
+  onLogin: () => void;
 }
 
 export interface SignupScreenNavigationProp {
@@ -112,4 +113,5 @@ export interface SavedScreenProps {
 
 export interface ProfileScreenProps {
   navigation: StackNavigationProp<RootStackParamList>;
+  onLogout: () => void;
 }

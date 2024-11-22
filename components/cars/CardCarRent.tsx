@@ -78,7 +78,7 @@ const CardCarRent = (props: CardCarRentProp) => {
   useEffect(() => {
     const available = checkAvailable();
     setIsAvailable(available);
-  }, []);
+  }, [carData.rent_date]);
 
   return (
     <TouchableWithoutFeedback
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 32,
     height: 32,
-    resizeMode: "contain"
+    resizeMode: "contain",
   },
   model: {
     fontSize: 18,

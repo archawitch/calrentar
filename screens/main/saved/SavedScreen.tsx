@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ScrollView, View, StyleSheet } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 
 import { SavedScreenProps } from "@appTypes/navigation/navigationTypes";
 import { Car } from "@appTypes/cars/carTypes";
@@ -9,6 +10,8 @@ import CardCarRent from "@components/cars/CardCarRent";
 import { getSavedCars } from "@services/saveServices";
 
 const SavedScreen: React.FC<SavedScreenProps> = ({ navigation }) => {
+  const isScreenFocused = useIsFocused();
+
   const [savedCars, setSavedCars] = useState<Car[]>([]);
 
   const pickupDate: Date = getPickupDate();
@@ -21,17 +24,19 @@ const SavedScreen: React.FC<SavedScreenProps> = ({ navigation }) => {
 
   // NOTE: fetch saved cars of the user
   useEffect(() => {
-    const unsubscribe = getSavedCars((data) => {
-      setSavedCars(data); // Update state with the data from Firebase
-    });
+    if (isScreenFocused) {
+      const unsubscribe = getSavedCars((data) => {
+        setSavedCars(data); // Update state with the data from Firebase
+      });
 
-    // Cleanup: Unsubscribe from the listener when the component unmounts
-    return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
-    };
-  }, []);
+      // Cleanup: Unsubscribe from the listener when the component unmounts
+      return () => {
+        if (unsubscribe) {
+          unsubscribe();
+        }
+      };
+    }
+  }, [isScreenFocused]);
 
   // Navigate to Car detail screen
   const navigateToCarInfo = (car: Car) => {
