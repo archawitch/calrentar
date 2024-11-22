@@ -1,0 +1,177 @@
+[
+  {
+    "horse_power": 203,
+    "id": 0,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2021
+  },
+  {
+    "horse_power": 203,
+    "id": 1,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2021
+  },
+  {
+    "horse_power": 203,
+    "id": 2,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2021
+  },
+  {
+    "horse_power": 139,
+    "id": 3,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2020
+  },
+  {
+    "horse_power": 120,
+    "id": 4,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2022
+  },
+  {
+    "horse_power": 204,
+    "id": 5,
+    "seats": 7,
+    "transmission": "Automatic",
+    "year_produced": 2022
+  },
+  {
+    "horse_power": 158,
+    "id": 6,
+    "seats": 5,
+    "transmission": "Manual",
+    "year_produced": 2019
+  },
+  {
+    "horse_power": 121,
+    "id": 7,
+    "seats": 5,
+    "transmission": "Manual",
+    "year_produced": 2019
+  },
+  {
+    "horse_power": 192,
+    "id": 8,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2021
+  },
+  {
+    "horse_power": 190,
+    "id": 9,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2020
+  },
+  {
+    "horse_power": 305,
+    "id": 10,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2018
+  },
+  {
+    "horse_power": 255,
+    "id": 11,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2022
+  },
+  {
+    "horse_power": 335,
+    "id": 12,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2021
+  },
+  {
+    "horse_power": 248,
+    "id": 13,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2020
+  },
+  {
+    "horse_power": 248,
+    "id": 14,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2021
+  },
+  {
+    "horse_power": 255,
+    "id": 15,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2020
+  },
+  {
+    "horse_power": 416,
+    "id": 16,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2020
+  },
+  {
+    "horse_power": 496,
+    "id": 17,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2020
+  },
+  {
+    "horse_power": 288,
+    "id": 18,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2021
+  },
+  {
+    "horse_power": 175,
+    "id": 19,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2020
+  },
+  {
+    "horse_power": 147,
+    "id": 20,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2018
+  },
+  {
+    "horse_power": 186,
+    "id": 21,
+    "seats": 5,
+    "transmission": "Manual",
+    "year_produced": 2021
+  },
+  {
+    "horse_power": 152,
+    "id": 22,
+    "seats": 4,
+    "transmission": "Automatic",
+    "year_produced": 2020
+  },
+  {
+    "horse_power": 272,
+    "id": 23,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2022
+  },
+  {
+    "horse_power": 250,
+    "id": 24,
+    "seats": 5,
+    "transmission": "Automatic",
+    "year_produced": 2019
+  }
+]

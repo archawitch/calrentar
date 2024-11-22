@@ -90,7 +90,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     }
 
     const formattedDate = formatDate(pickupDate);
-    const searchPattern = new RegExp(filter.searchInput, "i");
+    const searchPattern = new RegExp(filter.searchInput.replace(/[^\w\s]/g, ''), "i");
 
     const unavailableCars: Car[] = [];
     const availableCars = allCars.filter((car) => {
