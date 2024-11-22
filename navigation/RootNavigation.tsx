@@ -247,6 +247,10 @@ const RootNavigation: React.FC = () => {
                 <MainNavigator
                   {...props}
                   onLogout={() => {
+                    const setLanding = async () => {
+                      await AsyncStorage.setItem("isFirstTime", "true");
+                    };
+                    setLanding();
                     setUser(null);
                   }}
                 />
@@ -259,10 +263,7 @@ const RootNavigation: React.FC = () => {
                   {...props}
                   onLogin={() => {
                     const setLanding = async () => {
-                      await AsyncStorage.setItem(
-                        "isFirstTime",
-                        JSON.stringify("false")
-                      );
+                      await AsyncStorage.setItem("isFirstTime", "false");
                     };
                     setLanding();
                     setUser(auth.currentUser);
