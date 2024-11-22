@@ -4,6 +4,7 @@ import {
   View,
   StyleSheet,
   KeyboardAvoidingView,
+  TouchableWithoutFeedback,
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
@@ -14,8 +15,14 @@ import LabelInput from "@components/inputs/LabelInput";
 import ButtonLarge from "@components/buttons/ButtonLarge";
 import Alert from "@components/alert/Alert";
 import { changeUserPassword, getUserEmail } from "@services/profileService";
+import { signOut } from "firebase/auth";
+import { auth } from "@configs/firebaseConfig";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
+const ProfileScreen: React.FC<ProfileScreenProps> = ({
+  navigation,
+  onLogout,
+}) => {
   const [form, setForm] = useState<ProfileForm>({
     email: "",
     oldPassword: "",
@@ -26,7 +33,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const [isPressed, setIsPressed] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
 
-  // TODO: fetch user information
+  // NOTE: fetch user information
   const fetchEmail = () => {
     // Mock up
     const email = getUserEmail();
@@ -60,7 +67,7 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     setIsFormValid(true);
   }, [form]);
 
-  // TODO: changing password logic here ...
+  // NOTE: changing password logic here ...
   const changePassword = async () => {
     if (!isPressed) {
       const { isSuccess, msg } = await changeUserPassword(
@@ -83,6 +90,13 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     }
   };
 
+  // NOTE: handle log out
+  const handleLogout = async () => {
+    await signOut(auth);
+    await AsyncStorage.removeItem("user");
+    onLogout();
+  };
+
   // Toggle alert popup after successful changing password
   useEffect(() => {
     if (isSuccess) {
@@ -102,7 +116,18 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
     <ScrollView style={styles.scrollView}>
       <KeyboardAvoidingView behavior="position">
         <View style={styles.container}>
-          <Header title="Profile" />
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}>
+            <Header title="Profile" />
+            <TouchableWithoutFeedback
+              onPress={() => {
+                handleLogout();
+              }}>
+              <View>
+                <MaterialIcons name="logout" color="black" size={32} />
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
           <View style={{ alignItems: "center" }}>
             <MaterialIcons name="account-circle" size={140} color="#A1A1A6" />
           </View>

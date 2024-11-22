@@ -59,14 +59,11 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
   useEffect(() => {
     if (isConfirm) {
       setTimeout(() => {
-        navigation.reset({
-          index: 0,
-          routes: [
-            {
-              name: "Main",
-              params: { screen: "HistoryTab", params: { screen: "History" } },
-            },
-          ],
+        navigation.navigate("Main", {
+          screen: "HistoryTab",
+          params: {
+            screen: "History",
+          },
         });
       }, 3000);
     }

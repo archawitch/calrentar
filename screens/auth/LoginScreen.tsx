@@ -8,8 +8,6 @@ import {
   Keyboard,
   KeyboardAvoidingView,
 } from "react-native";
-import { CompositeNavigationProp } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
 
 import { LoginScreenNavigationProp } from "@appTypes/navigation/navigationTypes";
 import AuthInput from "@components/inputs/AuthInput";
@@ -17,7 +15,10 @@ import ButtonLarge from "@components/buttons/ButtonLarge";
 
 import { login } from "@services/authServices";
 
-const LoginScreen: React.FC<LoginScreenNavigationProp> = ({ navigation }) => {
+const LoginScreen: React.FC<LoginScreenNavigationProp> = ({
+  navigation,
+  onLogin,
+}) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isPressed, setIsPressed] = useState<boolean>(false);
@@ -30,15 +31,7 @@ const LoginScreen: React.FC<LoginScreenNavigationProp> = ({ navigation }) => {
       // If authenticated, navigate to the Home screen
       // Else, show pop up alert
       if (isSuccess) {
-        navigation.reset({
-          index: 0,
-          routes: [
-            {
-              name: "Main",
-              params: { screen: "HomeTab", params: { screen: "Home" } },
-            },
-          ],
-        });
+        onLogin();
         return;
       }
 
