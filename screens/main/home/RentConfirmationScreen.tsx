@@ -59,6 +59,7 @@ const RentConfirmationScreen: React.FC<RentConfirmationScreenProps> = ({
   useEffect(() => {
     if (isConfirm) {
       setTimeout(() => {
+        navigation.popToTop();
         navigation.navigate("Main", {
           screen: "HistoryTab",
           params: {
