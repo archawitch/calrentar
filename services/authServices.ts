@@ -79,7 +79,9 @@ export const login = async (
       })
     );
     console.log(`${username} login successful`);
+
     return { isSuccess: true, msg: "Login successful" };
+
   } catch (error: unknown) {
     if (error instanceof FirebaseError) {
       console.log(error.code);

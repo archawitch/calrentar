@@ -1,0 +1,352 @@
+[
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Chiang Mai",
+      "Pattaya",
+      "Nakhon Ratchasima"
+    ],
+    "color": "White",
+    "id": 0,
+    "make": "Toyota",
+    "model": "Camry",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 1980
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Chiang Mai",
+      "Pattaya",
+      "Nakhon Ratchasima"
+    ],
+    "color": "Black",
+    "id": 1,
+    "make": "Toyota",
+    "model": "Camry",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 1980
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Chiang Mai",
+      "Pattaya",
+      "Nakhon Ratchasima"
+    ],
+    "color": "Silver",
+    "id": 2,
+    "make": "Toyota",
+    "model": "Camry",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 1980
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Chiang Mai"
+    ],
+    "color": "White",
+    "id": 3,
+    "make": "Toyota",
+    "model": "Corolla Altis",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 1200
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Chiang Mai",
+      "Nakhon Ratchasima"
+    ],
+    "color": "Blue",
+    "id": 4,
+    "make": "Toyota",
+    "model": "Yaris Cross",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 1800
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Chiang Mai",
+      "Pattaya",
+      "Nakhon Ratchasima"
+    ],
+    "color": "White",
+    "id": 5,
+    "make": "Toyota",
+    "model": "Fortuner Leader",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 2950
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Chiang Mai",
+      "Pattaya",
+      "Nakhon Ratchasima"
+    ],
+    "color": "Red",
+    "id": 6,
+    "make": "Honda",
+    "model": "Civic",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 1200
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Chiang Mai",
+      "Pattaya",
+      "Nakhon Ratchasima"
+    ],
+    "color": "Blue",
+    "id": 7,
+    "make": "Honda",
+    "model": "City",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 750
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Chiang Mai",
+      "Pattaya",
+      "Nakhon Ratchasima"
+    ],
+    "color": "White",
+    "id": 8,
+    "make": "Honda",
+    "model": "Accord",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 1600
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Chiang Mai",
+      "Pattaya",
+      "Nakhon Ratchasima"
+    ],
+    "color": "Blue",
+    "id": 9,
+    "make": "Honda",
+    "model": "CR-V",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 1800
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Chiang Mai",
+      "Pattaya",
+      "Nakhon Ratchasima"
+    ],
+    "color": "Black",
+    "id": 10,
+    "make": "Chevrolet",
+    "model": "Equinox",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 3460
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Pattaya"
+    ],
+    "color": "White",
+    "id": 11,
+    "make": "BMW",
+    "model": "3 Series Sedan",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 8900
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket"
+    ],
+    "color": "Black",
+    "id": 12,
+    "make": "BMW",
+    "model": "X5",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 22500
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Pattaya"
+    ],
+    "color": "White",
+    "id": 13,
+    "make": "BMW",
+    "model": "5 Series",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 12000
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Chiang Mai"
+    ],
+    "color": "Grey",
+    "id": 14,
+    "make": "BMW",
+    "model": "X3",
+    "rent_count": 0,
+    "rental_price": 8500
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Pattaya"
+    ],
+    "color": "White",
+    "id": 15,
+    "make": "Mercedes-Benz",
+    "model": "C-Class",
+    "rent_count": 0,
+    "rental_price": 8900
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket"
+    ],
+    "color": "Black",
+    "id": 16,
+    "make": "Mercedes-Benz",
+    "model": "AMG G-Class",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 75000
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Pattaya"
+    ],
+    "color": "Black",
+    "id": 17,
+    "make": "Mercedes-Benz",
+    "model": "Maybach S-Class",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 65000
+  },
+  {
+    "available_location": [
+      "Bangkok"
+    ],
+    "color": "Green",
+    "id": 18,
+    "make": "Volkswagen",
+    "model": "Golf R",
+    "rent_count": 0,
+    "rental_price": 12975
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket"
+    ],
+    "color": "Black",
+    "id": 19,
+    "make": "Hyundai",
+    "model": "Staria",
+    "rent_count": 0,
+    "rental_price": 3900
+  },
+  {
+    "available_location": [
+      "Bangkok"
+    ],
+    "color": "Black",
+    "id": 20,
+    "make": "Kia",
+    "model": "Soul",
+    "rent_count": 0,
+    "rental_price": 1460
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Phuket",
+      "Chiang Mai",
+      "Nakhon Ratchasima"
+    ],
+    "color": "Beige",
+    "id": 21,
+    "make": "Mazda",
+    "model": "Mazda3 Fastback",
+    "rent_count": 0,
+    "rental_price": 1800
+  },
+  {
+    "available_location": [
+      "Bangkok",
+      "Pattaya"
+    ],
+    "color": "Grey",
+    "id": 22,
+    "make": "Subaru",
+    "model": "Impreza",
+    "rent_count": 0,
+    "rental_price": 1950
+  },
+  {
+    "available_location": [
+      "Bangkok"
+    ],
+    "color": "Blue",
+    "id": 23,
+    "make": "Acura",
+    "model": "TLX",
+    "rent_count": 0,
+    "rent_date": {},
+    "rental_price": 2000
+  },
+  {
+    "available_location": [
+      "Bangkok"
+    ],
+    "color": "Black",
+    "id": 24,
+    "make": "Volvo",
+    "model": "S60",
+    "rent_count": 0,
+    "rental_price": 6000
+  }
+]
