@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { ScrollView, View, StyleSheet } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 
 import { HistoryScreenProps } from "@appTypes/navigation/navigationTypes";
 import { HistoryItem } from "@appTypes/history/historyTypes";
@@ -10,6 +11,8 @@ import CardHistory from "@components/cars/CardHistory";
 import { getHistoryList } from "@services/historyServices";
 
 const HistoryScreen: React.FC<HistoryScreenProps> = ({ navigation }) => {
+  const isScreenFocused = useIsFocused();
+
   const [history, setHistory] = useState<HistoryItem[]>([]);
 
   // NOTE: fetch history of the user
@@ -21,8 +24,10 @@ const HistoryScreen: React.FC<HistoryScreenProps> = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    fetchHistory();
-  }, []);
+    if (isScreenFocused) {
+      fetchHistory();
+    }
+  }, [isScreenFocused]);
 
   const navigateToRentInfo = (item: HistoryItem) => {
     navigation.navigate("HistoryDetails", {

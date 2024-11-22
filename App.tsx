@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StyleSheet, SafeAreaView, Dimensions, LogBox } from "react-native";
+import { LogBox } from "react-native";
 import * as SplashScreen from "expo-splash-screen";
 import {
   useFonts,
@@ -36,18 +36,7 @@ const App: React.FC = () => {
     return null;
   }
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <RootNavigation></RootNavigation>
-    </SafeAreaView>
-  );
+  return <RootNavigation></RootNavigation>;
 };
-
-const styles = StyleSheet.create({
-  container: {
-    minHeight: Dimensions.get("window").height,
-    backgroundColor: "white",
-  },
-});
 
 export default App;
