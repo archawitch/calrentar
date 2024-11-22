@@ -47,7 +47,12 @@ export type MainTabParamList = {
 export type RootStackParamList = {
   Auth: NavigatorScreenParams<AuthStackParamList>;
   Main: NavigatorScreenParams<MainTabParamList>;
+  Landing: undefined;
 };
+
+export interface LandingScreenNavigationProp {
+  onContinue: () => void;
+}
 
 export interface LoginScreenNavigationProp {
   navigation: CompositeNavigationProp<
