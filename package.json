@@ -28,7 +28,8 @@
     "react-native": "0.76.2",
     "react-native-fit-image": "^1.5.5",
     "react-native-maps": "1.18.0",
-    "react-native-web": "~0.19.10"
+    "react-native-web": "~0.19.10",
+    "expo-updates": "~0.26.9"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
